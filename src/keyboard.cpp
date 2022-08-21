@@ -1,8 +1,5 @@
 #include "inc/keyboard.hpp"
 
-#include <cstring>
-#include <iostream>
-
 // Modifier Key Values
 static std::map<std::string, uint8_t> modifier_key_value = {
 	{ "left_ctrl",    0x01},
