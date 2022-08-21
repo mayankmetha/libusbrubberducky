@@ -1,252 +1,261 @@
 #include <stdint.h>
+#include <unistd.h>
+#include "model.h"
 
 // Modifier Keys
-#define LEFT_CTRL       1<<0
-#define LEFT_SHIFT      1<<1
-#define LEFT_ALT        1<<2
-#define LEFT_GUI        1<<3
-#define RIGHT_CTRL      1<<4
-#define RIGHT_SHIFT     1<<5
-#define RIGHT_ALT       1<<6
-#define RIGHT_GUI       1<<7
+static struct options modifier_key_value[] = {
+	{.opt = "left_ctrl", .val = 0x01},
+	{.opt = "right_ctrl", .val = 0x10},
+	{.opt = "left_shift", .val = 0x02},
+	{.opt = "right_shift", .val = 0x20},
+	{.opt = "left_alt", .val = 0x04},
+	{.opt = "right_alt", .val = 0x40},
+	{.opt = "left_meta", .val = 0x08},
+	{.opt = "right_meta", .val = 0x80},
+	{.opt = NULL}
+};
 
-//Keyboard mapping
-//Refer: https://www.usb.org/sites/default/files/hut1_3_0.pdf
-#define KEY_RESERVED_00              0x00
-#define KEY_ERROR_ROLL_OVER          0x01
-#define KEY_POST_FAIL                0x02
-#define KEY_ERROR_UNDEFINED          0x03
-#define KEY_A                        0x04
-#define KEY_B                        0x05
-#define KEY_C                        0x06
-#define KEY_D                        0x07
-#define KEY_E                        0x08
-#define KEY_F                        0x09
-#define KEY_G                        0x0A
-#define KEY_H                        0x0B
-#define KEY_I                        0x0C
-#define KEY_J                        0x0D
-#define KEY_K                        0x0E
-#define KEY_L                        0x0F
-#define KEY_M                        0x10
-#define KEY_N                        0x11
-#define KEY_O                        0x12
-#define KEY_P                        0x13
-#define KEY_Q                        0x14
-#define KEY_R                        0x15
-#define KEY_S                        0x16
-#define KEY_T                        0x17
-#define KEY_U                        0x18
-#define KEY_V                        0x19
-#define KEY_W                        0x1A
-#define KEY_X                        0x1B
-#define KEY_Y                        0x1C
-#define KEY_Z                        0x1D
-#define KEY_1                        0x1E
-#define KEY_2                        0x1F
-#define KEY_3                        0x20
-#define KEY_4                        0x21
-#define KEY_5                        0x22
-#define KEY_6                        0x23
-#define KEY_7                        0x24
-#define KEY_8                        0x25
-#define KEY_9                        0x26
-#define KEY_0                        0x27
-#define KEY_ENTER                    0x28
-#define KEY_ESCAPE                   0x29
-#define KEY_BACKSPACE                0x2A
-#define KEY_TAB                      0x2B
-#define KEY_SPACEBAR                 0x2C
-#define KEY_MINUS                    0x2D
-#define KEY_EQUAL                    0x2E
-#define KEY_OPEN_SQUARE_BRACKET      0x2F
-#define KEY_CLOSE_SQUARE_BRACKET     0x30
-#define KEY_BACKSLASH                0x31
-#define KEY_NONUS_TILDE              0x32
-#define KEY_SEMICOLON                0x33
-#define KEY_APOSTROPHE               0x34
-#define KEY_GRAVE                    0x35
-#define KEY_COMMA                    0x36
-#define KEY_PERIOD                   0x37
-#define KEY_FOWARDSLASH              0x38
-#define KEY_CAPSLOCK                 0x39
-#define KEY_F1                       0x3A
-#define KEY_F2                       0x3B
-#define KEY_F3                       0x3C
-#define KEY_F4                       0x3D
-#define KEY_F5                       0x3E
-#define KEY_F6                       0x3F
-#define KEY_F7                       0x40
-#define KEY_F8                       0x41
-#define KEY_F9                       0x42
-#define KEY_F10                      0x43
-#define KEY_F11                      0x44
-#define KEY_F12                      0x45
-#define KEY_PRINTSCREEN              0x46
-#define KEY_SCROOLLOCK               0x47
-#define KEY_PAUSE                    0x48
-#define KEY_INSERT                   0x49
-#define KEY_HOME                     0x4A
-#define KEY_PAGE_UP                  0x4B
-#define KEY_DELETE                   0x4C
-#define KEY_END                      0x4D
-#define KEY_PAGE_DOWN                0x4E
-#define KEY_RIGHT_ARROW              0x4F
-#define KEY_LEFT_ARROW               0x50
-#define KEY_DOWN_ARROW               0x51
-#define KEY_UP_ARROW                 0x52
-#define KEY_NUMLOCK                  0x53
-#define KEY_PAD_FORWARD_SLASH        0x54
-#define KEY_PAD_ASTERISK             0x55
-#define KEY_PAD_MINUS                0x56
-#define KEY_PAD_PLUS                 0x57
-#define KEY_PAD_ENTER                0x58
-#define KEY_PAD_1                    0x59
-#define KEY_PAD_2                    0x5A
-#define KEY_PAD_3                    0x5B
-#define KEY_PAD_4                    0x5C
-#define KEY_PAD_5                    0x5D
-#define KEY_PAD_6                    0x5E
-#define KEY_PAD_7                    0x5F
-#define KEY_PAD_8                    0x60
-#define KEY_PAD_9                    0x61
-#define KEY_PAD_0                    0x62
-#define KEY_PAD_PERIOD               0x63
-#define KEY_NONUS_BACKSLASH          0x64
-#define KEY_APPLICATION              0x65
-#define KEY_POWER                    0x66
-#define KEY_PAD_EQUAL                0x67
-#define KEY_F13                      0x68
-#define KEY_F14                      0x69
-#define KEY_F15                      0x6A
-#define KEY_F16                      0x6B
-#define KEY_F17                      0x6C
-#define KEY_F18                      0x6D
-#define KEY_F19                      0x6E
-#define KEY_F20                      0x6F
-#define KEY_F21                      0x70
-#define KEY_F22                      0x71
-#define KEY_F23                      0x72
-#define KEY_F24                      0x73
-#define KEY_EXECUTE                  0x74
-#define KEY_HELP                     0x75
-#define KEY_MENU                     0x76
-#define KEY_SELECT                   0x77
-#define KEY_STOP                     0x78
-#define KEY_AGAIN                    0x79
-#define KEY_UNDO                     0x7A
-#define KEY_CUT                      0x7B
-#define KEY_COPY                     0x7C
-#define KEY_PASTE                    0x7D
-#define KEY_FIND                     0x7E
-#define KEY_MUTE                     0x7F
-#define KEY_VOL_UP                   0x80
-#define KEY_VOL_DOWN                 0x81
-#define KEY_LOCKING_CAPSLOCK         0x82
-#define KEY_LOCKING_NUMLOCK          0x83
-#define KEY_LOCKING_SCROLLLOCK       0x84
-#define KEY_PAD_COMMA                0x85
-#define KEY_PAD_EQUAL_2              0x86
-#define KEY_INTERNATION_1            0x87
-#define KEY_INTERNATION_2            0x88
-#define KEY_INTERNATION_3            0x89
-#define KEY_INTERNATION_4            0x8A
-#define KEY_INTERNATION_5            0x8B
-#define KEY_INTERNATION_6            0x8C
-#define KEY_INTERNATION_7            0x8D
-#define KEY_INTERNATION_8            0x8E
-#define KEY_INTERNATION_9            0x8F
-#define KEY_LANG_1                   0x90
-#define KEY_LANG_2                   0x91
-#define KEY_LANG_3                   0x92
-#define KEY_LANG_4                   0x93
-#define KEY_LANG_5                   0x94
-#define KEY_LANG_6                   0x95
-#define KEY_LANG_7                   0x96
-#define KEY_LANG_8                   0x97
-#define KEY_LANG_9                   0x98
-#define KEY_ALTERNATE_ERASE          0x99
-#define KEY_SYSRQ                    0x9A
-#define KEY_CANCEL                   0x9B
-#define KEY_CLEAR                    0x9C
-#define KEY_PRIOR                    0x9D
-#define KEY_RETURN                   0x9E
-#define KEY_SEPERATOR                0x9F
-#define KEY_OUT                      0xA0
-#define KEY_OPER                     0xA1
-#define KEY_CLEAR_AGAIN              0xA2
-#define KEY_CRSEL                    0xA3
-#define KEY_EXCEL                    0xA4
-#define KEY_RESERVED_A5              0xA5
-#define KEY_RESERVED_A6              0xA6
-#define KEY_RESERVED_A7              0xA7
-#define KEY_RESERVED_A8              0xA8
-#define KEY_RESERVED_A9              0xA9
-#define KEY_RESERVED_AA              0xAA
-#define KEY_RESERVED_AB              0xAB
-#define KEY_RESERVED_AC              0xAC
-#define KEY_RESERVED_AD              0xAD
-#define KEY_RESERVED_AE              0xAE
-#define KEY_RESERVED_AF              0xAF
-#define KEY_PAD_00                   0xB0
-#define KEY_PAD_000                  0xB1
-#define KEY_THOUSAND_SEPARATOR       0xB2
-#define KEY_DECIMAL_SEPARATOR        0xB3
-#define KEY_CURRENCY_UNIT            0xB4
-#define KEY_CURRENCY_SUB_UNIT        0xB5
-#define KEY_PAD_OPEN_BRACKET         0xB6
-#define KEY_PAD_CLOSE_BRACKET        0xB7
-#define KEY_PAD_OPEN_CURLY_BRACKET   0xB8
-#define KEY_PAD_CLOSE_CURLY_BRACKET  0xB9
-#define KEY_PAD_TAB                  0xBA
-#define KEY_PAD_BACKSPACE            0xBB
-#define KEY_PAD_A                    0xBC
-#define KEY_PAD_B                    0xBD
-#define KEY_PAD_C                    0xBE
-#define KEY_PAD_D                    0xBF
-#define KEY_PAD_E                    0xC0
-#define KEY_PAD_F                    0xC1
-#define KEY_PAD_XOR                  0xC2
-#define KEY_PAD_CARET                0xC3
-#define KEY_PAD_PERCENTAGE           0xC4
-#define KEY_PAD_OPEN_ANGLE_BRACKET   0xC5
-#define KEY_PAD_CLOSE_ANGLE_BRACKET  0xC6
-#define KEY_PAD_AMPERSAND            0xC7
-#define KEY_PAD_DOUBLE_AMPERSAND     0xC8
-#define KEY_PAD_VERTICAL_BAR         0xC9
-#define KEY_PAD_DOUBLE_VERTICAL_BAR  0xCA
-#define KEY_PAD_COLON                0xCB
-#define KEY_PAD_HASH                 0xCC
-#define KEY_PAD_SPACE                0xCD
-#define KEY_PAD_AT                   0xCE
-#define KEY_PAD_EXCLAMATION          0xCF
-#define KEY_PAD_MEMORY_STORE         0xD0
-#define KEY_PAD_MEMORY_RECALL        0xD1
-#define KEY_PAD_MEMORY_CLEAR         0xD2
-#define KEY_PAD_MEMORY_ADD           0xD3
-#define KEY_PAD_MEMORY_SUBTRACT      0xD4
-#define KEY_PAD_MEMORY_MULTIPLY      0xD5
-#define KEY_PAD_MEMORY_DIVIDE        0xD6
-#define KEY_PAD_PLUS_MINUS           0xD7
-#define KEY_PAD_CLEAR                0xD8
-#define KEY_PAD_CLEAR_ENTER          0xD9
-#define KEY_PAD_BINARY               0xDA
-#define KEY_PAD_OCTAL                0xDB
-#define KEY_PAD_DECIMAL              0xDC
-#define KEY_PAD_HEXADECIMAL          0xDD
-#define KEY_RESERVED_DE              0xDE
-#define KEY_RESERVED_DF              0xDF
-#define KEY_LEFT_CTRL                0xE0
-#define KEY_LEFT_SHIFT               0xE1
-#define KEY_LEFT_ALT                 0xE2
-#define KEY_LEFT_GUI                 0xE3
-#define KEY_RIGHT_CTRL               0xE4
-#define KEY_RIGHT_SHIFT              0xE5
-#define KEY_RIGHT_ALT                0xE6
-#define KEY_RIGHT_GUI                0xE7
+// Keyboard mapping
+// Refer: https://www.usb.org/sites/default/files/hut1_3_0.pdf
+static struct options key_value[] = {
+	{.opt = "key_reserved_00", .val = 0x00},
+	{.opt = "key_error_roll_over", .val = 0x01},
+	{.opt = "key_post_fail", .val = 0x02},
+	{.opt = "key_error_undefined", .val = 0x03},
+	{.opt = "key_a", .val = 0x04},
+	{.opt = "key_b", .val = 0x05},
+	{.opt = "key_c", .val = 0x06},
+	{.opt = "key_d", .val = 0x07},
+	{.opt = "key_e", .val = 0x08},
+	{.opt = "key_f", .val = 0x09},
+	{.opt = "key_g", .val = 0x0a},
+	{.opt = "key_h", .val = 0x0b},
+	{.opt = "key_i", .val = 0x0c},
+	{.opt = "key_j", .val = 0x0d},
+	{.opt = "key_k", .val = 0x0e},
+	{.opt = "key_l", .val = 0x0f},
+	{.opt = "key_m", .val = 0x10},
+	{.opt = "key_n", .val = 0x11},
+	{.opt = "key_o", .val = 0x12},
+	{.opt = "key_p", .val = 0x13},
+	{.opt = "key_q", .val = 0x14},
+	{.opt = "key_r", .val = 0x15},
+	{.opt = "key_s", .val = 0x16},
+	{.opt = "key_t", .val = 0x17},
+	{.opt = "key_u", .val = 0x18},
+	{.opt = "key_v", .val = 0x19},
+	{.opt = "key_w", .val = 0x1a},
+	{.opt = "key_x", .val = 0x1b},
+	{.opt = "key_y", .val = 0x1c},
+	{.opt = "key_z", .val = 0x1d},
+	{.opt = "key_1", .val = 0x1e},
+	{.opt = "key_2", .val = 0x1f},
+	{.opt = "key_3", .val = 0x20},
+	{.opt = "key_4", .val = 0x21},
+	{.opt = "key_5", .val = 0x22},
+	{.opt = "key_6", .val = 0x23},
+	{.opt = "key_7", .val = 0x24},
+	{.opt = "key_8", .val = 0x25},
+	{.opt = "key_9", .val = 0x26},
+	{.opt = "key_0", .val = 0x27},
+	{.opt = "key_enter", .val = 0x28},
+	{.opt = "key_escape", .val = 0x29},
+	{.opt = "key_backspace", .val = 0x2a},
+	{.opt = "key_tab", .val = 0x2b},
+	{.opt = "key_spacebar", .val = 0x2c},
+	{.opt = "key_minus", .val = 0x2d},
+	{.opt = "key_equal", .val = 0x2e},
+	{.opt = "key_open_square_bracket", .val = 0x2f},
+	{.opt = "key_close_square_bracket", .val = 0x30},
+	{.opt = "key_backslash", .val = 0x31},
+	{.opt = "key_nonus_tilde", .val = 0x32},
+	{.opt = "key_semicolon", .val = 0x33},
+	{.opt = "key_apostrophe", .val = 0x34},
+	{.opt = "key_grave", .val = 0x35},
+	{.opt = "key_comma", .val = 0x36},
+	{.opt = "key_period", .val = 0x37},
+	{.opt = "key_fowardslash", .val = 0x38},
+	{.opt = "key_capslock", .val = 0x39},
+	{.opt = "key_f1", .val = 0x3a},
+	{.opt = "key_f2", .val = 0x3b},
+	{.opt = "key_f3", .val = 0x3c},
+	{.opt = "key_f4", .val = 0x3d},
+	{.opt = "key_f5", .val = 0x3e},
+	{.opt = "key_f6", .val = 0x3f},
+	{.opt = "key_f7", .val = 0x40},
+	{.opt = "key_f8", .val = 0x41},
+	{.opt = "key_f9", .val = 0x42},
+	{.opt = "key_f10", .val = 0x43},
+	{.opt = "key_f11", .val = 0x44},
+	{.opt = "key_f12", .val = 0x45},
+	{.opt = "key_printscreen", .val = 0x46},
+	{.opt = "key_scroollock", .val = 0x47},
+	{.opt = "key_pause", .val = 0x48},
+	{.opt = "key_insert", .val = 0x49},
+	{.opt = "key_home", .val = 0x4a},
+	{.opt = "key_page_up", .val = 0x4b},
+	{.opt = "key_delete", .val = 0x4c},
+	{.opt = "key_end", .val = 0x4d},
+	{.opt = "key_page_down", .val = 0x4e},
+	{.opt = "key_right_arrow", .val = 0x4f},
+	{.opt = "key_left_arrow", .val = 0x50},
+	{.opt = "key_down_arrow", .val = 0x51},
+	{.opt = "key_up_arrow", .val = 0x52},
+	{.opt = "key_numlock", .val = 0x53},
+	{.opt = "key_pad_forward_slash", .val = 0x54},
+	{.opt = "key_pad_asterisk", .val = 0x55},
+	{.opt = "key_pad_minus", .val = 0x56},
+	{.opt = "key_pad_plus", .val = 0x57},
+	{.opt = "key_pad_enter", .val = 0x58},
+	{.opt = "key_pad_1", .val = 0x59},
+	{.opt = "key_pad_2", .val = 0x5a},
+	{.opt = "key_pad_3", .val = 0x5b},
+	{.opt = "key_pad_4", .val = 0x5c},
+	{.opt = "key_pad_5", .val = 0x5d},
+	{.opt = "key_pad_6", .val = 0x5e},
+	{.opt = "key_pad_7", .val = 0x5f},
+	{.opt = "key_pad_8", .val = 0x60},
+	{.opt = "key_pad_9", .val = 0x61},
+	{.opt = "key_pad_0", .val = 0x62},
+	{.opt = "key_pad_period", .val = 0x63},
+	{.opt = "key_nonus_backslash", .val = 0x64},
+	{.opt = "key_application", .val = 0x65},
+	{.opt = "key_power", .val = 0x66},
+	{.opt = "key_pad_equal", .val = 0x67},
+	{.opt = "key_f13", .val = 0x68},
+	{.opt = "key_f14", .val = 0x69},
+	{.opt = "key_f15", .val = 0x6a},
+	{.opt = "key_f16", .val = 0x6b},
+	{.opt = "key_f17", .val = 0x6c},
+	{.opt = "key_f18", .val = 0x6d},
+	{.opt = "key_f19", .val = 0x6e},
+	{.opt = "key_f20", .val = 0x6f},
+	{.opt = "key_f21", .val = 0x70},
+	{.opt = "key_f22", .val = 0x71},
+	{.opt = "key_f23", .val = 0x72},
+	{.opt = "key_f24", .val = 0x73},
+	{.opt = "key_execute", .val = 0x74},
+	{.opt = "key_help", .val = 0x75},
+	{.opt = "key_menu", .val = 0x76},
+	{.opt = "key_select", .val = 0x77},
+	{.opt = "key_stop", .val = 0x78},
+	{.opt = "key_again", .val = 0x79},
+	{.opt = "key_undo", .val = 0x7a},
+	{.opt = "key_cut", .val = 0x7b},
+	{.opt = "key_copy", .val = 0x7c},
+	{.opt = "key_paste", .val = 0x7d},
+	{.opt = "key_find", .val = 0x7e},
+	{.opt = "key_mute", .val = 0x7f},
+	{.opt = "key_vol_up", .val = 0x80},
+	{.opt = "key_vol_down", .val = 0x81},
+	{.opt = "key_locking_capslock", .val = 0x82},
+	{.opt = "key_locking_numlock", .val = 0x83},
+	{.opt = "key_locking_scrolllock", .val = 0x84},
+	{.opt = "key_pad_comma", .val = 0x85},
+	{.opt = "key_pad_equal_2", .val = 0x86},
+	{.opt = "key_internation_1", .val = 0x87},
+	{.opt = "key_internation_2", .val = 0x88},
+	{.opt = "key_internation_3", .val = 0x89},
+	{.opt = "key_internation_4", .val = 0x8a},
+	{.opt = "key_internation_5", .val = 0x8b},
+	{.opt = "key_internation_6", .val = 0x8c},
+	{.opt = "key_internation_7", .val = 0x8d},
+	{.opt = "key_internation_8", .val = 0x8e},
+	{.opt = "key_internation_9", .val = 0x8f},
+	{.opt = "key_lang_1", .val = 0x90},
+	{.opt = "key_lang_2", .val = 0x91},
+	{.opt = "key_lang_3", .val = 0x92},
+	{.opt = "key_lang_4", .val = 0x93},
+	{.opt = "key_lang_5", .val = 0x94},
+	{.opt = "key_lang_6", .val = 0x95},
+	{.opt = "key_lang_7", .val = 0x96},
+	{.opt = "key_lang_8", .val = 0x97},
+	{.opt = "key_lang_9", .val = 0x98},
+	{.opt = "key_alternate_erase", .val = 0x99},
+	{.opt = "key_sysrq", .val = 0x9a},
+	{.opt = "key_cancel", .val = 0x9b},
+	{.opt = "key_clear", .val = 0x9c},
+	{.opt = "key_prior", .val = 0x9d},
+	{.opt = "key_return", .val = 0x9e},
+	{.opt = "key_seperator", .val = 0x9f},
+	{.opt = "key_out", .val = 0xa0},
+	{.opt = "key_oper", .val = 0xa1},
+	{.opt = "key_clear_again", .val = 0xa2},
+	{.opt = "key_crsel", .val = 0xa3},
+	{.opt = "key_excel", .val = 0xa4},
+	{.opt = "key_reserved_a5", .val = 0xa5},
+	{.opt = "key_reserved_a6", .val = 0xa6},
+	{.opt = "key_reserved_a7", .val = 0xa7},
+	{.opt = "key_reserved_a8", .val = 0xa8},
+	{.opt = "key_reserved_a9", .val = 0xa9},
+	{.opt = "key_reserved_aa", .val = 0xaa},
+	{.opt = "key_reserved_ab", .val = 0xab},
+	{.opt = "key_reserved_ac", .val = 0xac},
+	{.opt = "key_reserved_ad", .val = 0xad},
+	{.opt = "key_reserved_ae", .val = 0xae},
+	{.opt = "key_reserved_af", .val = 0xaf},
+	{.opt = "key_pad_00", .val = 0xb0},
+	{.opt = "key_pad_000", .val = 0xb1},
+	{.opt = "key_thousand_separator", .val = 0xb2},
+	{.opt = "key_decimal_separator", .val = 0xb3},
+	{.opt = "key_currency_unit", .val = 0xb4},
+	{.opt = "key_currency_sub_unit", .val = 0xb5},
+	{.opt = "key_pad_open_bracket", .val = 0xb6},
+	{.opt = "key_pad_close_bracket", .val = 0xb7},
+	{.opt = "key_pad_open_curly_bracket", .val = 0xb8},
+	{.opt = "key_pad_close_curly_bracket", .val = 0xb9},
+	{.opt = "key_pad_tab", .val = 0xba},
+	{.opt = "key_pad_backspace", .val = 0xbb},
+	{.opt = "key_pad_a", .val = 0xbc},
+	{.opt = "key_pad_b", .val = 0xbd},
+	{.opt = "key_pad_c", .val = 0xbe},
+	{.opt = "key_pad_d", .val = 0xbf},
+	{.opt = "key_pad_e", .val = 0xc0},
+	{.opt = "key_pad_f", .val = 0xc1},
+	{.opt = "key_pad_xor", .val = 0xc2},
+	{.opt = "key_pad_caret", .val = 0xc3},
+	{.opt = "key_pad_percentage", .val = 0xc4},
+	{.opt = "key_pad_open_angle_bracket", .val = 0xc5},
+	{.opt = "key_pad_close_angle_bracket", .val = 0xc6},
+	{.opt = "key_pad_ampersand", .val = 0xc7},
+	{.opt = "key_pad_double_ampersand", .val = 0xc8},
+	{.opt = "key_pad_vertical_bar", .val = 0xc9},
+	{.opt = "key_pad_double_vertical_bar", .val = 0xca},
+	{.opt = "key_pad_colon", .val = 0xcb},
+	{.opt = "key_pad_hash", .val = 0xcc},
+	{.opt = "key_pad_space", .val = 0xcd},
+	{.opt = "key_pad_at", .val = 0xce},
+	{.opt = "key_pad_exclamation", .val = 0xcf},
+	{.opt = "key_pad_memory_store", .val = 0xd0},
+	{.opt = "key_pad_memory_recall", .val = 0xd1},
+	{.opt = "key_pad_memory_clear", .val = 0xd2},
+	{.opt = "key_pad_memory_add", .val = 0xd3},
+	{.opt = "key_pad_memory_subtract", .val = 0xd4},
+	{.opt = "key_pad_memory_multiply", .val = 0xd5},
+	{.opt = "key_pad_memory_divide", .val = 0xd6},
+	{.opt = "key_pad_plus_minus", .val = 0xd7},
+	{.opt = "key_pad_clear", .val = 0xd8},
+	{.opt = "key_pad_clear_enter", .val = 0xd9},
+	{.opt = "key_pad_binary", .val = 0xda},
+	{.opt = "key_pad_octal", .val = 0xdb},
+	{.opt = "key_pad_decimal", .val = 0xdc},
+	{.opt = "key_pad_hexadecimal", .val = 0xdd},
+	{.opt = "key_reserved_de", .val = 0xde},
+	{.opt = "key_reserved_df", .val = 0xdf},
+	{.opt = "key_left_ctrl", .val = 0xe0},
+	{.opt = "key_left_shift", .val = 0xe1},
+	{.opt = "key_left_alt", .val = 0xe2},
+	{.opt = "key_left_gui", .val = 0xe3},
+	{.opt = "key_right_ctrl", .val = 0xe4},
+	{.opt = "key_right_shift", .val = 0xe5},
+	{.opt = "key_right_alt", .val = 0xe6},
+	{.opt = "key_right_gui", .val = 0xe7},
+	{.opt = NULL}
+};
 
-struct {
-    uint8_t modifier_key;
-    uint8_t reserved;
-    uint8_t keys[6];
+struct __attribute__((__packed__))
+{
+	uint8_t modifier_key;
+	uint8_t reserved;
+	uint8_t keys[6];
 } keyboard_packet;
