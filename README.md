@@ -1,11 +1,16 @@
 # libusbrubberducky
 A simple library for usb rubber ducky
 
+## Reference Documents
+- [Device Class Definition HID](https://usb.org/sites/default/files/hid1_11.pdf)
+- [HID Usage Table for USB](https://www.usb.org/sites/default/files/hut1_3_0.pdf)
+- [Linux USB HID gadget driver](https://docs.kernel.org/usb/gadget_hid.html)
+
 ## TODO
 ### HID Functions
 - [ ] Enable/Disable HID Mode
-- [ ] Arming Mode (Simulate a button press)
-- [ ] Feedback LEDs
+- [ ] Arming Mode (Simulate a button press to start/stop the rubber ducky attack)
+- [ ] Feedback LEDs to know status of HID attack.
 - [ ] Set HID Paramaters (VID_ PID_ MAN_ PROD_ SERIAL_)
 - [ ] HID Feedback
 - [ ] Get existing HID parameters
