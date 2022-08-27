@@ -15,9 +15,9 @@ A simple library for usb rubber ducky
 - [x] Modifier Keys
 - [x] Lock Keys
 ### Mouse Layout
-- [ ] Buttons
-- [ ] Scroll
-- [ ] Wheel
+- [x] Buttons
+- [x] Scroll
+- [x] Wheel
 ### HID Commands
 - [ ] Comment Command (REM)
 - [ ] Delay (Delay DEFAULTDELAY DEFAULT_DELAY)

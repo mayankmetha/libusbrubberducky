@@ -1,4 +1,4 @@
 .config
 .vscode
-obj/*
-libs/*
+out/*
+tmp/*
