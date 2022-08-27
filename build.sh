@@ -14,6 +14,7 @@ case $(uname | tr '[:upper:]' '[:lower:]') in
 esac
 rm -rf out/"$LIB_OS_NAME" tmp/"$LIB_OS_NAME"
 mkdir out out/"$LIB_OS_NAME" tmp tmp/"$LIB_OS_NAME"
-g++ -std=c++17 -c src/*.cpp 
+g++ -MMD -MP -std=c++17 -c src/*.cpp 
 mv *.o tmp/"$LIB_OS_NAME"/
+mv *.d tmp/"$LIB_OS_NAME"/
 g++ -o out/"$LIB_OS_NAME"/usbrubberducky tmp/"$LIB_OS_NAME"/*.o
