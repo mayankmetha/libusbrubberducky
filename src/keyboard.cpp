@@ -1,7 +1,7 @@
 #include "inc/keyboard.hpp"
 
 // Modifier Key Values
-static std::map<std::string, uint8_t> modifier_key_value = {
+static std::map<char const *, uint8_t> modifier_key_value = {
 	{ "left_ctrl",    0x01},
 	{ "right_ctrl",   0x10},
 	{ "left_shift",   0x02},
@@ -14,7 +14,7 @@ static std::map<std::string, uint8_t> modifier_key_value = {
 
 // Keyboard mapping
 // Refer: https://www.usb.org/sites/default/files/hut1_3_0.pdf
-static std::map<std::string, uint8_t> key_value = {
+static std::map<char const *, uint8_t> key_value = {
     { "key_reserved_00",  0x00},
 	{ "key_error_roll_over",  0x01},
 	{ "key_post_fail",  0x02},
@@ -249,17 +249,27 @@ static std::map<std::string, uint8_t> key_value = {
 	{ "key_right_gui",  0xe7}
 };
 
+uint8_t keyboard_report_reset(keyboard_packet *return_packet) {
+	//TODO: replace memset
+	memset(return_packet, 0x00, sizeof(keyboard_packet));
+	return sizeof(keyboard_packet);
+}
+
 uint8_t keyboard_report(char buffer[MAX_LEN], keyboard_packet *return_packet) {
     uint8_t key_count = 0;
-    std::map<std::string, uint8_t>::iterator key_loop;
-    std::map<std::string, uint8_t>::iterator mod_loop;
+    std::map<char const *, uint8_t>::iterator key_loop;
+    std::map<char const *, uint8_t>::iterator mod_loop;
 
     if(buffer == NULL || strlen(buffer) == 0) {
         return 0;
     }
 
-    //TODO: replace memset, strtok
-    memset(return_packet, 0x00, sizeof(keyboard_packet));
+    //TODO: replace strtok
+    key_count = keyboard_report_reset(return_packet);
+	if (key_count != 8) 
+		return 0;
+	else
+		key_count = 0;
 
     for(char *token = strtok(buffer, " "); token != NULL; token = strtok(NULL, " ")) {
         if(key_count < 6) {
