@@ -1,7 +1,7 @@
 #include "inc/keyboard.hpp"
 
 // Modifier Key Values
-static std::map<char const *, uint8_t> modifier_key_value = {
+static std::map<std::string, uint8_t> modifier_key_value = {
 	{ "left_ctrl",    0x01},
 	{ "right_ctrl",   0x10},
 	{ "left_shift",   0x02},
@@ -14,7 +14,7 @@ static std::map<char const *, uint8_t> modifier_key_value = {
 
 // Keyboard mapping
 // Refer: https://www.usb.org/sites/default/files/hut1_3_0.pdf
-static std::map<char const *, uint8_t> key_value = {
+static std::map<std::string, uint8_t> key_value = {
     { "key_reserved_00",  0x00},
 	{ "key_error_roll_over",  0x01},
 	{ "key_post_fail",  0x02},
@@ -257,8 +257,8 @@ uint8_t keyboard_report_reset(keyboard_packet *return_packet) {
 
 uint8_t keyboard_report(char buffer[MAX_LEN], keyboard_packet *return_packet) {
     uint8_t key_count = 0;
-    std::map<char const *, uint8_t>::iterator key_loop;
-    std::map<char const *, uint8_t>::iterator mod_loop;
+    std::map<std::string, uint8_t>::iterator key_loop;
+    std::map<std::string, uint8_t>::iterator mod_loop;
 
     if(buffer == NULL || strlen(buffer) == 0) {
         return 0;
