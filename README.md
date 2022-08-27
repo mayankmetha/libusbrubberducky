@@ -7,14 +7,17 @@ A simple library for usb rubber ducky
 - [Linux USB HID gadget driver](https://docs.kernel.org/usb/gadget_hid.html)
 
 ## TODO
-### HID Functions
-- [ ] Enable/Disable HID Mode
-- [ ] Arming Mode (Simulate a button press to start/stop the rubber ducky attack)
-- [ ] Feedback LEDs to know status of HID attack.
-- [ ] Set HID Paramaters (VID_ PID_ MAN_ PROD_ SERIAL_)
-- [ ] HID Feedback
-- [ ] Get existing HID parameters
-- [ ] OS Detection (Win, Mac, Linux, ChromeOS, Android, ios)
+### Keyboard Layout
+- [x] Alphanumeric
+- [x] Punctuations
+- [x] Cursors
+- [x] System Keys
+- [x] Modifier Keys
+- [x] Lock Keys
+### Mouse Layout
+- [ ] Buttons
+- [ ] Scroll
+- [ ] Wheel
 ### HID Commands
 - [ ] Comment Command (REM)
 - [ ] Delay (Delay DEFAULTDELAY DEFAULT_DELAY)
@@ -37,13 +40,6 @@ A simple library for usb rubber ducky
 - [ ] Payload control
 - [ ] Extensions
 - [ ] Code Intent
-### Keyboard Layout
-- [ ] Alphanumeric
-- [ ] Punctuations
-- [ ] Cursors
-- [ ] System Keys
-- [ ] Modifier Keys
-- [ ] Lock Keys
 ### HID Keyboard Commands
 - [ ] String injection (STRING STRINGLN)
 - [ ] String delay (STRING_DELAY STRINGDELAY)
@@ -69,5 +65,11 @@ A simple library for usb rubber ducky
 - [ ] Hold/drag button (DRAG HOLD)
 - [ ] Move cursor without click (MOVE TRANSLATE)
 - [ ] Mouse Wheel (KNOB WHEEL SCROLL)
-
-
+### HID Functions
+- [ ] Enable/Disable HID Mode
+- [ ] Arming Mode (Simulate a button press to start/stop the rubber ducky attack)
+- [ ] Feedback LEDs to know status of HID attack.
+- [ ] Set HID Paramaters (VID_ PID_ MAN_ PROD_ SERIAL_)
+- [ ] HID Feedback
+- [ ] Get existing HID parameters
+- [ ] OS Detection (Win, Mac, Linux, ChromeOS, Android, ios)
