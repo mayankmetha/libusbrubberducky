@@ -250,31 +250,27 @@ static std::map<std::string, uint8_t> key_value = {
 };
 
 uint8_t keyboard_report_reset(keyboard_packet *return_packet) {
-	//TODO: replace memset
-	memset(return_packet, 0x00, sizeof(keyboard_packet));
-	return sizeof(keyboard_packet);
+	return memset_s(return_packet, sizeof(keyboard_packet), NULL_BYTE);
 }
 
 uint8_t keyboard_report(const std::string buffer, keyboard_packet *return_packet) {
-    uint8_t key_count = 0;
+    uint8_t key_count = NULL_BYTE;
     std::map<std::string, uint8_t>::iterator key_loop;
     std::map<std::string, uint8_t>::iterator mod_loop;
 	std::istringstream is(buffer);    
     const std::vector<std::string> tokenized_str = std::vector<std::string>(std::istream_iterator<std::string>(is), std::istream_iterator<std::string>());
 
     if(buffer.empty()) {
-        return 0;
+        return NULL_BYTE;
     }
 
-    key_count = keyboard_report_reset(return_packet);
-	if (key_count != 8) 
-		return 0;
-	else
-		key_count = 0;
+	if (keyboard_report_reset(return_packet) != ERRNO_SUCCESS) {
+		return NULL_BYTE;
+	}
 
-    for(auto vector_index = 0; vector_index < tokenized_str.size(); vector_index++) {
+    for(auto vector_index = ITERATOR_START; vector_index < tokenized_str.size(); vector_index++) {
 		std::string token = tokenized_str.at(vector_index);
-        if(key_count < 6) {
+        if(key_count < MAX_KEYBOARD_KEYS) {
             key_loop = key_value.find(token);
             if(key_loop != key_value.end()) {
                 return_packet->keys[key_count++] = key_loop->second;
