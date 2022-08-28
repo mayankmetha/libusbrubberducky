@@ -1,8 +1,6 @@
-#include <stdint.h>
-#include <unistd.h>
 #include <map>
 #include <string>
-#include <cstring>
-#include <iostream>
+#include <vector>
+#include <sstream>
 
 #define MAX_LEN 512

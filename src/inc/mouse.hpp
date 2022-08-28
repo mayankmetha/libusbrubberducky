@@ -9,4 +9,4 @@ typedef struct __attribute__((__packed__))
 } mouse_packet;
 
 extern uint8_t mouse_report_reset(mouse_packet *return_packet);
-extern uint8_t mouse_report(char buffer[MAX_LEN], mouse_packet *return_packet);
+extern uint8_t mouse_report(const std::string buffer, mouse_packet *return_packet);

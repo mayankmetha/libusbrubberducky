@@ -20,23 +20,25 @@ uint8_t mouse_report_reset(mouse_packet *return_packet) {
 }
 
 // input for buffer button x=[-127,127] y=[-127,127] wheel
-uint8_t mouse_report(char buffer[MAX_LEN], mouse_packet *return_packet) {
+uint8_t mouse_report(const std::string buffer, mouse_packet *return_packet) {
     uint8_t key_count = 0;
     std::map<std::string, uint8_t>::iterator button_loop;
     std::map<std::string, uint8_t>::iterator wheel_loop;
+    std::istringstream is(buffer);    
+    const std::vector<std::string> tokenized_str = std::vector<std::string>(std::istream_iterator<std::string>(is), std::istream_iterator<std::string>());
 
-    if(buffer == NULL || strlen(buffer) == 0) {
+    if(buffer.empty()) {
         return 0;
     }
 
-    //TODO: replace strtok
     key_count = mouse_report_reset(return_packet);
 	if (key_count != 4) 
 		return 0;
 	else
 		key_count = 0;
-    
-    for(char *token = strtok(buffer, " "); token != NULL; token = strtok(NULL, " ")) {
+
+    for(auto vector_index = 0; vector_index < tokenized_str.size(); vector_index++) {
+        std::string token = tokenized_str.at(vector_index);
         button_loop = mouse_button_value.find(token);
         if (button_loop != mouse_button_value.end()) {
             return_packet->button_click |= button_loop->second;
@@ -48,22 +50,22 @@ uint8_t mouse_report(char buffer[MAX_LEN], mouse_packet *return_packet) {
             continue;
         }
         if (token[0] == 'x' && token[1] == '=') {
-            int x = strtol(token+2, NULL, 0);
+            int x = strtol(token.substr(2, token.npos).c_str(), NULL, 0);
             if (x >= INT8_MIN && x <= INT8_MAX)
                 return_packet->position_x = (uint8_t)x;
             else
-                fprintf(stderr, "Unknown mouse parameter: %s\n",token);
+                fprintf(stderr, "Unknown mouse parameter: %s\n",token.c_str());
             continue;
         }
         if (token[0] == 'y' && token[1] == '=') {
-            int y = strtol(token+2, NULL, 0);
+            int y = strtol(token.substr(2, token.npos).c_str(), NULL, 0);
             if (y >= INT8_MIN && y <= INT8_MAX)
                 return_packet->position_y = (uint8_t)y;
             else
-                fprintf(stderr, "Unknown mouse parameter: %s\n",token);
+                fprintf(stderr, "Unknown mouse parameter: %s\n",token.c_str());
             continue;
         }
-        fprintf(stderr, "Unknown mouse parameter: %s\n",token);
+        fprintf(stderr, "Unknown mouse parameter: %s\n",token.c_str());
     }
     return sizeof(return_packet);
 }

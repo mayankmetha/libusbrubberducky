@@ -255,23 +255,25 @@ uint8_t keyboard_report_reset(keyboard_packet *return_packet) {
 	return sizeof(keyboard_packet);
 }
 
-uint8_t keyboard_report(char buffer[MAX_LEN], keyboard_packet *return_packet) {
+uint8_t keyboard_report(const std::string buffer, keyboard_packet *return_packet) {
     uint8_t key_count = 0;
     std::map<std::string, uint8_t>::iterator key_loop;
     std::map<std::string, uint8_t>::iterator mod_loop;
+	std::istringstream is(buffer);    
+    const std::vector<std::string> tokenized_str = std::vector<std::string>(std::istream_iterator<std::string>(is), std::istream_iterator<std::string>());
 
-    if(buffer == NULL || strlen(buffer) == 0) {
+    if(buffer.empty()) {
         return 0;
     }
 
-    //TODO: replace strtok
     key_count = keyboard_report_reset(return_packet);
 	if (key_count != 8) 
 		return 0;
 	else
 		key_count = 0;
 
-    for(char *token = strtok(buffer, " "); token != NULL; token = strtok(NULL, " ")) {
+    for(auto vector_index = 0; vector_index < tokenized_str.size(); vector_index++) {
+		std::string token = tokenized_str.at(vector_index);
         if(key_count < 6) {
             key_loop = key_value.find(token);
             if(key_loop != key_value.end()) {
@@ -285,7 +287,7 @@ uint8_t keyboard_report(char buffer[MAX_LEN], keyboard_packet *return_packet) {
             continue;
         }
 
-        fprintf(stderr, "Unknown key: %s\n",token);
+        fprintf(stderr, "Unknown key: %s\n",token.c_str());
     }
     return sizeof(keyboard_packet);
 }
