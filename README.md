@@ -7,10 +7,12 @@ A simple library for usb rubber ducky
 - [Linux USB HID gadget driver](https://docs.kernel.org/usb/gadget_hid.html)
 - [OS DEV: USB HID](https://wiki.osdev.org/USB_Human_Interface_Devices)
 
+## Architecture
+![Architecture Diagram](https://raw.githubusercontent.com/mayankmetha/libusbrubberducky/main/architecture_diagram.svg "Architecture Diagram")
+
 ## TODO
 ### HID Functions
 - [ ] Detect HID device availability 
-- [ ] Read/Write to HID
 - [x] HID Keyboard LED Report
 - [ ] Enable/Disable HID Mode
 - [ ] Set HID Paramaters (VID_ PID_ MAN_ PROD_ SERIAL_)
@@ -27,7 +29,12 @@ A simple library for usb rubber ducky
 - [x] Buttons
 - [x] Scroll
 - [x] Wheel
-### HID Commands
+### Rubber Ducky Scripts
+- [ ] Take input from Application
+- [ ] Script parser and intepreter
+- [ ] Read/Write to HID devices on Linux/Android
+- [ ] Report output to Application
+### Rubber Ducky Commands
 - [ ] Comment Command (REM)
 - [ ] Delay (Delay DEFAULTDELAY DEFAULT_DELAY)
 - [ ] Constants
@@ -49,7 +56,7 @@ A simple library for usb rubber ducky
 - [ ] Payload control
 - [ ] Extensions
 - [ ] Code Intent
-### HID Keyboard Commands
+### Rubber Ducky Keyboard Commands
 - [ ] String injection (STRING STRINGLN)
 - [ ] String delay (STRING_DELAY STRINGDELAY)
 - [ ] Cursor Keys 1 (UP DOWN LEFT RIGHT)
@@ -69,7 +76,7 @@ A simple library for usb rubber ducky
 - [ ] Lock Key On/Off/Toggle status check
 - [ ] Key Hold (Hold and Release a key)
 - [ ] Key press Jitter
-### HID Mouse Commands
+### Rubber Ducky Mouse Commands
 - [ ] Press button (CLICK TOUCH PRESS)
 - [ ] Hold/drag button (DRAG HOLD)
 - [ ] Move cursor without click (MOVE TRANSLATE)
