@@ -26,3 +26,5 @@ typedef struct __attribute__((__packed__)) {
 extern uint8_t keyboard_report_reset(keyboard_packet *return_packet);
 extern uint8_t keyboard_report(const std::string buffer, keyboard_packet *return_packet);
 extern void decode_keyout_led_status(uint8_t keyboard_led_report, keyboard_led_status_packet *return_status);
+extern int open_keyboard_hid();
+extern int close_keyboard_hid(int fd);

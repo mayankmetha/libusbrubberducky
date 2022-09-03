@@ -2,6 +2,11 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <unistd.h>
+#include <fcntl.h>
+
+#define KEYBOARD_HID_FILE       "/dev/hidg0"
+#define MOUSE_HID_FILE          "/dev/hidg1"
 
 #define RSIZE_MAX_MEM           256UL << 20
 #define ERRNO_SUCCESS           0

@@ -1,23 +1,25 @@
 #include "inc/mouse.hpp"
 
-// mouse button values
+// mouse button values map
 static std::map<std::string, uint8_t> mouse_button_value = {
 	{ "button_left",    0x01},
 	{ "button_right",   0x02},
 	{ "button_middle",  0x04}
 };
 
-// mouse wheel direction
+// mouse wheel direction map
 static std::map<std::string, uint8_t> mouse_wheel_direction_value = {
 	{ "wheel_up",    0x01},
 	{ "wheel_down",  0xff}
 };
 
+// clear mouse input report
 uint8_t mouse_report_reset(mouse_packet *return_packet) {
-	return(memset_s(return_packet, sizeof(mouse_packet), NULL_BYTE));
+	return memset_s(return_packet, sizeof(mouse_packet), NULL_BYTE);
 }
 
 // input for buffer button x=[-127,127] y=[-127,127] wheel
+// creates a mouse input report
 uint8_t mouse_report(const std::string buffer, mouse_packet *return_packet) {
     uint8_t key_count = NULL_BYTE;
     std::map<std::string, uint8_t>::iterator button_loop;
@@ -65,3 +67,16 @@ uint8_t mouse_report(const std::string buffer, mouse_packet *return_packet) {
     }
     return sizeof(return_packet);
 }
+
+// open /dev/hidg1 (mouse) is available
+// if present send out a file descriptor
+// if not present send out a negative number (indication of error or device not present)
+int open_mouse_hid() {
+    return open(MOUSE_HID_FILE, O_RDWR | O_NONBLOCK);
+}
+
+// close /dev/hidg1 (mouse)
+// if negative number is returned then this is an indication of error
+int close_mouse_hid(int fd) {
+    return (fd < 0) ? EBADF : close(fd);
+} 

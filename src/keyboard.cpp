@@ -1,6 +1,6 @@
 #include "inc/keyboard.hpp"
 
-// Modifier Key Values
+// Modifier Key Values map
 static std::map<std::string, uint8_t> modifier_key_value = {
 	{ "left_ctrl",    0x01},
 	{ "right_ctrl",   0x10},
@@ -12,7 +12,7 @@ static std::map<std::string, uint8_t> modifier_key_value = {
 	{ "right_meta",   0x80}
 };
 
-// Keyboard mapping
+// Keyboard key mapping
 // Refer: https://www.usb.org/sites/default/files/hut1_3_0.pdf
 static std::map<std::string, uint8_t> key_value = {
     { "key_reserved_00",  0x00},
@@ -249,10 +249,12 @@ static std::map<std::string, uint8_t> key_value = {
 	{ "key_right_gui",  0xe7}
 };
 
+// clear keyboard input report
 uint8_t keyboard_report_reset(keyboard_packet *return_packet) {
 	return memset_s(return_packet, sizeof(keyboard_packet), NULL_BYTE);
 }
 
+// creates a keyboard input report
 uint8_t keyboard_report(const std::string buffer, keyboard_packet *return_packet) {
     uint8_t key_count = NULL_BYTE;
     std::map<std::string, uint8_t>::iterator key_loop;
@@ -288,6 +290,7 @@ uint8_t keyboard_report(const std::string buffer, keyboard_packet *return_packet
     return sizeof(keyboard_packet);
 }
 
+// decode keyboard output report bits
 void decode_keyout_led_status(uint8_t keyboard_led_report, keyboard_led_status_packet *return_status) {
 	if (keyboard_led_report > (LED_NUMLOCK|LED_CAPSLOCK|LED_SCROLLLOCK|LED_COMPOSE|LED_KANA))
 		fprintf(stderr, "Unknown led found\n");
@@ -297,3 +300,16 @@ void decode_keyout_led_status(uint8_t keyboard_led_report, keyboard_led_status_p
 	return_status->compose = keyboard_led_report&LED_COMPOSE ? LED_ENABLED : LED_DISABLED;
 	return_status->kana = keyboard_led_report&LED_KANA ? LED_ENABLED : LED_DISABLED;
 }
+
+// open /dev/hidg0 (keyboard) is available
+// if present send out a file descriptor
+// if not present send out a negative number (indication of error or device not present)
+int open_keyboard_hid() {
+    return open(KEYBOARD_HID_FILE, O_RDWR | O_NONBLOCK);
+}
+
+// close /dev/hidg0 (keyboard)
+// if negative number is returned then this is an indication of error
+int close_keyboard_hid(int fd) {
+    return (fd < 0) ? EBADF : close(fd);
+} 

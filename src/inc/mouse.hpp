@@ -9,3 +9,5 @@ typedef struct __attribute__((__packed__)) {
 
 extern uint8_t mouse_report_reset(mouse_packet *return_packet);
 extern uint8_t mouse_report(const std::string buffer, mouse_packet *return_packet);
+extern int open_mouse_hid();
+extern int close_mouse_hid(int fd);
