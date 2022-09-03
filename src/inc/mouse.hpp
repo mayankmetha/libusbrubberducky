@@ -1,7 +1,6 @@
 #include "utils.hpp"
 
-typedef struct __attribute__((__packed__))
-{
+typedef struct __attribute__((__packed__)) {
 	uint8_t button_click;
 	uint8_t position_x;
     uint8_t position_y;

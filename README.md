@@ -5,8 +5,17 @@ A simple library for usb rubber ducky
 - [Device Class Definition HID](https://usb.org/sites/default/files/hid1_11.pdf)
 - [HID Usage Table for USB](https://www.usb.org/sites/default/files/hut1_3_0.pdf)
 - [Linux USB HID gadget driver](https://docs.kernel.org/usb/gadget_hid.html)
+- [OS DEV: USB HID](https://wiki.osdev.org/USB_Human_Interface_Devices)
 
 ## TODO
+### HID Functions
+- [ ] Detect HID device availability 
+- [ ] Read/Write to HID
+- [x] HID Keyboard LED Report
+- [ ] Enable/Disable HID Mode
+- [ ] Set HID Paramaters (VID_ PID_ MAN_ PROD_ SERIAL_)
+- [ ] Get existing HID parameters
+- [ ] OS Detection (Win, Mac, Linux, ChromeOS, Android, ios)
 ### Keyboard Layout
 - [x] Alphanumeric
 - [x] Punctuations
@@ -65,11 +74,6 @@ A simple library for usb rubber ducky
 - [ ] Hold/drag button (DRAG HOLD)
 - [ ] Move cursor without click (MOVE TRANSLATE)
 - [ ] Mouse Wheel (KNOB WHEEL SCROLL)
-### HID Functions
-- [ ] Enable/Disable HID Mode
+### Rubber Ducky Hardware Features
 - [ ] Arming Mode (Simulate a button press to start/stop the rubber ducky attack)
 - [ ] Feedback LEDs to know status of HID attack.
-- [ ] Set HID Paramaters (VID_ PID_ MAN_ PROD_ SERIAL_)
-- [ ] HID Feedback
-- [ ] Get existing HID parameters
-- [ ] OS Detection (Win, Mac, Linux, ChromeOS, Android, ios)
