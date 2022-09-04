@@ -30,12 +30,12 @@ A simple library for usb rubber ducky
 - [x] Scroll
 - [x] Wheel
 ### Rubber Ducky Scripts
-- [X] Take input from Application
+- [x] Take input from Application
 - [ ] Script parser and intepreter
 - [ ] Read/Write to HID devices on Linux/Android
 - [ ] Report output to Application
 ### Rubber Ducky Commands
-- [ ] Comment Command (REM)
+- [x] Comment Command (REM)
 - [ ] Delay (Delay DEFAULTDELAY DEFAULT_DELAY)
 - [ ] Constants
 - [ ] Variables
@@ -55,7 +55,7 @@ A simple library for usb rubber ducky
 - [ ] Random HID parameters
 - [ ] Payload control
 - [ ] Extensions
-- [ ] Code Intent
+- [x] Code Intent
 ### Rubber Ducky Keyboard Commands
 - [ ] String injection (STRING STRINGLN)
 - [ ] String delay (STRING_DELAY STRINGDELAY)

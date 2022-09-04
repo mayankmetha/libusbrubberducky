@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <regex>
 
 #define KEYBOARD_HID_FILE       "/dev/hidg0"
 #define MOUSE_HID_FILE          "/dev/hidg1"

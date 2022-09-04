@@ -6,11 +6,17 @@ int main(int argc, const char *argv[])
 {
 	std::vector<std::string> lines;
 
-	if (remove(INPUT_PIPE) != 0 || remove(OUTPUT_PIPE) != 0) {
-		printf("Failed to clean up");
+	if (remove(INPUT_PIPE) != 0) {
+		printf("Failed to cleanup input pipes");
 	}
-	if (mkfifo(INPUT_PIPE, PIPE_PERMISSION) < 0 && mkfifo(OUTPUT_PIPE, PIPE_PERMISSION) < 0) {
-		printf("Error creating pipes");
+	if (remove(OUTPUT_PIPE) != 0) {
+		printf("Failed to cleanup output pipes");
+	}
+	if (mkfifo(INPUT_PIPE, PIPE_PERMISSION) < 0) {
+		printf("Failed to create input pipe");
+	}
+	if (mkfifo(OUTPUT_PIPE, PIPE_PERMISSION) < 0) {
+		printf("Failed to create output pipe");
 	}
 
 	if(input_file_to_vector(INPUT_PIPE, lines)) {
@@ -20,5 +26,6 @@ int main(int argc, const char *argv[])
 	} else {
 		printf("Error taking file input");
 	}
+	
 	return 0;
 }
