@@ -2,11 +2,19 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <fstream>
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #define KEYBOARD_HID_FILE       "/dev/hidg0"
 #define MOUSE_HID_FILE          "/dev/hidg1"
+
+#define INPUT_PIPE              "usbrubberducky.ipipe"
+#define OUTPUT_PIPE             "usbrubberducky.opipe"
+#define PIPE_PERMISSION         0777
 
 #define RSIZE_MAX_MEM           256UL << 20
 #define ERRNO_SUCCESS           0

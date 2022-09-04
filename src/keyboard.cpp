@@ -292,8 +292,9 @@ uint8_t keyboard_report(const std::string buffer, keyboard_packet *return_packet
 
 // decode keyboard output report bits
 void decode_keyout_led_status(uint8_t keyboard_led_report, keyboard_led_status_packet *return_status) {
-	if (keyboard_led_report > (LED_NUMLOCK|LED_CAPSLOCK|LED_SCROLLLOCK|LED_COMPOSE|LED_KANA))
+	if (keyboard_led_report > (LED_NUMLOCK|LED_CAPSLOCK|LED_SCROLLLOCK|LED_COMPOSE|LED_KANA)) {
 		fprintf(stderr, "Unknown led found\n");
+	}
 	return_status->num_lock = keyboard_led_report&LED_NUMLOCK ? LED_ENABLED : LED_DISABLED;
 	return_status->caps_lock = keyboard_led_report&LED_CAPSLOCK ? LED_ENABLED : LED_DISABLED;
 	return_status->scroll_lock = keyboard_led_report&LED_SCROLLLOCK ? LED_ENABLED : LED_DISABLED;

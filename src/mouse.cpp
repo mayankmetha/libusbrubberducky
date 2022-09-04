@@ -49,18 +49,20 @@ uint8_t mouse_report(const std::string buffer, mouse_packet *return_packet) {
         }
         if (token[MOUSE_XY_OFFSET0] == MOUSE_XY_X && token[MOUSE_XY_OFFSET1] == MOUSE_XY_EQUAL) {
             int x = strtol(token.substr(MOUSE_XY_OFFSET2, token.npos).c_str(), NULL, NULL_BYTE);
-            if (x >= INT8_MIN && x <= INT8_MAX)
+            if (x >= INT8_MIN && x <= INT8_MAX) {
                 return_packet->position_x = (uint8_t)x;
-            else
+            } else {
                 fprintf(stderr, "Unknown mouse parameter: %s\n",token.c_str());
+            }
             continue;
         }
         if (token[MOUSE_XY_OFFSET0] == MOUSE_XY_Y && token[MOUSE_XY_OFFSET1] == MOUSE_XY_EQUAL) {
             int y = strtol(token.substr(MOUSE_XY_OFFSET2, token.npos).c_str(), NULL, NULL_BYTE);
-            if (y >= INT8_MIN && y <= INT8_MAX)
+            if (y >= INT8_MIN && y <= INT8_MAX) {
                 return_packet->position_y = (uint8_t)y;
-            else
+            } else {
                 fprintf(stderr, "Unknown mouse parameter: %s\n",token.c_str());
+            }
             continue;
         }
         fprintf(stderr, "Unknown mouse parameter: %s\n",token.c_str());

@@ -30,7 +30,7 @@ A simple library for usb rubber ducky
 - [x] Scroll
 - [x] Wheel
 ### Rubber Ducky Scripts
-- [ ] Take input from Application
+- [X] Take input from Application
 - [ ] Script parser and intepreter
 - [ ] Read/Write to HID devices on Linux/Android
 - [ ] Report output to Application
