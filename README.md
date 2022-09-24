@@ -12,10 +12,10 @@ A simple library for usb rubber ducky
 
 ## TODO
 ### HID Functions
-- [ ] Detect HID device availability 
+- [x] Detect HID device availability 
 - [x] HID Keyboard LED Report
-- [ ] Enable/Disable HID Mode
-- [ ] Set HID Paramaters (VID_ PID_ MAN_ PROD_ SERIAL_)
+- [x] Enable/Disable HID Mode
+- [ ] Set HID Paramaters
 - [ ] Get existing HID parameters
 - [ ] OS Detection (Win, Mac, Linux, ChromeOS, Android, ios)
 ### Keyboard Layout
@@ -56,6 +56,7 @@ A simple library for usb rubber ducky
 - [ ] Payload control
 - [ ] Extensions
 - [x] Code Intent
+- [ ] USB HID Parameters (VID_ PID_ MAN_ PROD_ SERIAL_)
 ### Rubber Ducky Keyboard Commands
 - [ ] String injection (STRING STRINGLN)
 - [ ] String delay (STRING_DELAY STRINGDELAY)

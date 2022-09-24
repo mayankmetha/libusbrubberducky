@@ -314,3 +314,8 @@ int open_keyboard_hid() {
 int close_keyboard_hid(int fd) {
     return (fd < 0) ? EBADF : close(fd);
 } 
+
+// return true is /dev/hidg0 is present
+bool keyboard_available() {
+	return (close_keyboard_hid(open_keyboard_hid()) == 0) ? true : false;
+}

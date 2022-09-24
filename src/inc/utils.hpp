@@ -1,13 +1,15 @@
-#include <map>
-#include <string>
-#include <vector>
-#include <sstream>
-#include <fstream>
+#include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <map>
+#include <array>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <fstream>
 #include <regex>
 
 #define KEYBOARD_HID_FILE       "/dev/hidg0"
@@ -37,3 +39,4 @@
 #define MOUSE_XY_EQUAL          '='
 
 extern uint8_t memset_s(void *dest, size_t len, uint8_t value);
+extern std::string exec(std::string cmd);
