@@ -82,3 +82,8 @@ int open_mouse_hid() {
 int close_mouse_hid(int fd) {
     return (fd < 0) ? EBADF : close(fd);
 } 
+
+// return true is /dev/hidg1 is present
+bool mouse_available() {
+	return (close_mouse_hid(open_mouse_hid()) == 0) ? true : false;
+}

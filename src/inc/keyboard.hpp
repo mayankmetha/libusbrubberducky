@@ -28,3 +28,4 @@ extern uint8_t keyboard_report(const std::string buffer, keyboard_packet *return
 extern void decode_keyout_led_status(uint8_t keyboard_led_report, keyboard_led_status_packet *return_status);
 extern int open_keyboard_hid();
 extern int close_keyboard_hid(int fd);
+extern bool keyboard_available();
