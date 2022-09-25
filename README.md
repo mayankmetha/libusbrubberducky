@@ -15,8 +15,8 @@ A simple library for usb rubber ducky
 - [x] Detect HID device availability 
 - [x] HID Keyboard LED Report
 - [x] Enable/Disable HID Mode
-- [ ] Set HID Paramaters
-- [ ] Get existing HID parameters
+- [x] Set USB HID Paramaters (VendorID, ProductID, Manufacturer, Product, Serial)
+- [x] Get USB HID parameters (VendorID, ProductID, Manufacturer, Product, Serial)
 - [ ] OS Detection (Win, Mac, Linux, ChromeOS, Android, ios)
 ### Keyboard Layout
 - [x] Alphanumeric

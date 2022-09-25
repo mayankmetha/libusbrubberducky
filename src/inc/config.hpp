@@ -58,6 +58,26 @@ echo $(getprop sys.usb.controller) > /config/usb_gadget/g1/UDC;"
 echo \"none\" > /config/usb_gadget/g1/UDC; \
 echo $(getprop sys.usb.controller) > /config/usb_gadget/hid/UDC;"
 
+#define SET_VID_1 "echo "
+#define SET_VID_2 " > /config/usb_gadget/hid/idVendor;"
+#define GET_VID "cat /config/usb_gadget/hid/idVendor;"
+
+#define SET_PID_1 "echo "
+#define SET_PID_2 " > /config/usb_gadget/hid/idProduct;"
+#define GET_PID "cat /config/usb_gadget/hid/idProduct;"
+
+#define SET_MAN_1 "echo "
+#define SET_MAN_2 " > /config/usb_gadget/hid/strings/0x409/manufacturer;"
+#define GET_MAN "cat /config/usb_gadget/hid/strings/0x409/manufacturer;"
+
+#define SET_PROD_1 "echo "
+#define SET_PROD_2 " > /config/usb_gadget/hid/strings/0x409/product;"
+#define GET_PROD "cat /config/usb_gadget/hid/strings/0x409/product;"
+
+#define SET_SERIAL_1 "echo "
+#define SET_SERIAL_2 " > /config/usb_gadget/hid/strings/0x409/serialnumber;"
+#define GET_SERIAL "cat /config/usb_gadget/hid/strings/0x409/serialnumber;"
+
 extern int8_t is_kernel_supported();
 
 #ifdef __ANDROID__
@@ -66,4 +86,14 @@ extern int8_t create_configfs_hid();
 extern int8_t delete_configfs_hid();
 extern int8_t enable_configfs_hid();
 extern int8_t disable_configfs_hid();
+extern int8_t set_configfs_hid_vid(std::string vid);
+extern std::string get_configfs_hid_vid();
+extern int8_t set_configfs_hid_pid(std::string pid);
+extern std::string get_configfs_hid_pid();
+extern int8_t set_configfs_hid_manufacture(std::string manufacture);
+extern std::string get_configfs_hid_manufacture();
+extern int8_t set_configfs_hid_product(std::string product);
+extern std::string get_configfs_hid_product();
+extern int8_t set_configfs_hid_serial(std::string serial);
+extern std::string get_configfs_hid_serial();
 #endif
