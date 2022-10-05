@@ -78,7 +78,16 @@ echo $(getprop sys.usb.controller) > /config/usb_gadget/hid/UDC;"
 #define SET_SERIAL_2 " > /config/usb_gadget/hid/strings/0x409/serialnumber;"
 #define GET_SERIAL "cat /config/usb_gadget/hid/strings/0x409/serialnumber;"
 
+#define GET_ENUMERATION_TIMESTAMP "dmesg | grep -E \"06 03[0-9][0-9] 0409\" | cut -d\"x\" -f2;dmesg -C"
+
 extern int8_t is_kernel_supported();
+
+typedef struct __attribute__((__packed__)) {
+    bool possible_windows;
+    bool possible_linux;
+    bool not_linux;
+    bool not_mac;
+} usb_eumeration_basic_os_fingerprint;
 
 #ifdef __ANDROID__
 extern int8_t is_configfs_supported();
@@ -96,4 +105,5 @@ extern int8_t set_configfs_hid_product(std::string product);
 extern std::string get_configfs_hid_product();
 extern int8_t set_configfs_hid_serial(std::string serial);
 extern std::string get_configfs_hid_serial();
+extern std::string usb_enumeration_os_fingerprint();
 #endif

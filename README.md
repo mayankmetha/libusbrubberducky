@@ -17,7 +17,9 @@ A simple library for usb rubber ducky
 - [x] Enable/Disable HID Mode
 - [x] Set USB HID Paramaters (VendorID, ProductID, Manufacturer, Product, Serial)
 - [x] Get USB HID parameters (VendorID, ProductID, Manufacturer, Product, Serial)
-- [ ] OS Detection (Win, Mac, Linux, ChromeOS, Android, ios)
+### OS Fingerprinting
+- [x] USB Enumeration based fingerprinting (Windows based OS, Darwin based OS, Linux based OS)
+- [ ] Keystroke supported based fingerprinting (Win, Mac, Linux, ChromeOS, Android, iOS)
 ### Keyboard Layout
 - [x] Alphanumeric
 - [x] Punctuations

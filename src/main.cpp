@@ -23,6 +23,8 @@ int main(int argc, const char *argv[])
 #ifdef __ANDROID__
 	if(argv[1][0] == 'e')
 		printf("%d %d\n",create_configfs_hid(),enable_configfs_hid());
+	else if(argv[1][0] == 'c')
+		printf("%s\n",usb_enumeration_os_fingerprint().c_str());
 	else if (argv[1][0] == 'd')
 		printf("%d %d\n",disable_configfs_hid(), delete_configfs_hid());
 	else if (argv[1][0] == 's' && argv[1][1] == 'v')

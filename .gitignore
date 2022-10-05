@@ -3,3 +3,4 @@
 out/*
 tmp/*
 test/*
+.DS_Store
