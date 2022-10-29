@@ -37,9 +37,11 @@ A simple library for usb rubber ducky
 - [ ] Read/Write to HID devices on Linux/Android
 - [ ] Report output to Application
 ### Rubber Ducky Commands
+- [x] Code Intent
 - [x] Comment Command (REM)
-- [ ] Delay (Delay DEFAULTDELAY DEFAULT_DELAY)
-- [ ] Constants
+- [x] Constants
+- [ ] Functions
+- [ ] Extensions
 - [ ] Variables
 - [ ] Math Operators
 - [ ] Comparasion Operators
@@ -51,14 +53,12 @@ A simple library for usb rubber ducky
 - [ ] Else command
 - [ ] While loop
 - [ ] Loop (REPEAT)
-- [ ] Functions
 - [ ] Return
 - [ ] Ramdom Keystroke Injection
 - [ ] Random HID parameters
 - [ ] Payload control
-- [ ] Extensions
-- [x] Code Intent
 - [ ] USB HID Parameters (VID_ PID_ MAN_ PROD_ SERIAL_)
+- [ ] Delay (DELAY DEFAULTDELAY DEFAULT_DELAY)
 ### Rubber Ducky Keyboard Commands
 - [ ] String injection (STRING STRINGLN)
 - [ ] String delay (STRING_DELAY STRINGDELAY)
