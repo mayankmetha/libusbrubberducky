@@ -12,78 +12,96 @@ A simple library for usb rubber ducky
 
 ## TODO
 ### HID Functions
-- [x] Detect HID device availability 
-- [x] HID Keyboard LED Report
-- [x] Enable/Disable HID Mode
-- [x] Set USB HID Paramaters (VendorID, ProductID, Manufacturer, Product, Serial)
-- [x] Get USB HID parameters (VendorID, ProductID, Manufacturer, Product, Serial)
+Status|Task
+:---:|:---
+✅|Detect HID device availability 
+✅|HID Keyboard LED Report
+✅|Enable/Disable HID Mode
+✅|Set USB HID Paramaters (VendorID, ProductID, Manufacturer, Product, Serial)
+✅|Get USB HID parameters (VendorID, ProductID, Manufacturer, Product, Serial)
 ### OS Fingerprinting
-- [x] USB Enumeration based fingerprinting (Windows based OS, Darwin based OS, Linux based OS)
-- [ ] Keystroke supported based fingerprinting (Win, Mac, Linux, ChromeOS, Android, iOS)
+Status|Task
+:---:|:---
+✅|USB Enumeration based fingerprinting (Windows based OS, Darwin based OS, Linux based OS)
+❌|Keystroke supported based fingerprinting (Win, Mac, Linux, ChromeOS, Android, iOS)
 ### Keyboard Layout
-- [x] Alphanumeric
-- [x] Punctuations
-- [x] Cursors
-- [x] System Keys
-- [x] Modifier Keys
-- [x] Lock Keys
+Status|Task
+:---:|:---
+✅|Alphanumeric
+✅|Punctuations
+✅|Cursors
+✅|System Keys
+✅|Modifier Keys
+✅|Lock Keys
 ### Mouse Layout
-- [x] Buttons
-- [x] Scroll
-- [x] Wheel
+Status|Task
+:---:|:---
+✅|Buttons
+✅|Scroll
+✅|Wheel
 ### Rubber Ducky Scripts
-- [x] Take input from Application
-- [ ] Script parser and intepreter
-- [ ] Read/Write to HID devices on Linux/Android
-- [ ] Report output to Application
+Status|Task
+:---:|:---
+✅|Take input from Application
+🚧|Script parser and intepreter
+🚧|Read/Write to HID devices on Linux/Android
+🚧|Report output to Application
 ### Rubber Ducky Commands
-- [x] Code Intent
-- [x] Comment Command (REM)
-- [x] Constants
-- [ ] Functions
-- [ ] Extensions
-- [ ] Variables
-- [ ] Math Operators
-- [ ] Comparasion Operators
-- [ ] Parentheses Operator
-- [ ] Logical Operators
-- [ ] Assignment Operators
-- [ ] Bitwise Operators
-- [ ] If command
-- [ ] Else command
-- [ ] While loop
-- [ ] Loop (REPEAT)
-- [ ] Return
-- [ ] Ramdom Keystroke Injection
-- [ ] Random HID parameters
-- [ ] Payload control
-- [ ] USB HID Parameters (VID_ PID_ MAN_ PROD_ SERIAL_)
-- [ ] Delay (DELAY DEFAULTDELAY DEFAULT_DELAY)
+Status|Task
+:---:|:---
+✅|Code Intent
+✅|Comment Command (REM)
+✅|Constants
+🚧|Variables
+❌|Functions
+❌|Extensions
+❌|Math Operators
+❌|Comparasion Operators
+❌|Parentheses Operator
+❌|Logical Operators
+❌|Assignment Operators
+❌|Bitwise Operators
+❌|If command
+❌|Else command
+❌|While loop
+❌|Loop (REPEAT)
+❌|Return
+❌|Ramdom Keystroke Injection
+❌|Random HID parameters
+❌|Payload control
+🚧|USB HID Parameters (VID_ PID_ MAN_ PROD_ SERIAL_)
+❌|Delay (DELAY DEFAULTDELAY DEFAULT_DELAY)
 ### Rubber Ducky Keyboard Commands
-- [ ] String injection (STRING STRINGLN)
-- [ ] String delay (STRING_DELAY STRINGDELAY)
-- [ ] Cursor Keys 1 (UP DOWN LEFT RIGHT)
-- [ ] Curson Keys 2 (UPARROW DOWNARROW LEFTARROW RIGHTARROW)
-- [ ] Cursor Keys 3 (PAGEUP PAGEDOWN HOME END)
-- [ ] Cursor Keys 4 (INS INSERT DELETE DEL BACKSPACE BKSP TAB SPACE)
-- [ ] System Keys 1 (ENTER)
-- [ ] System Keys 2 (ESCAPE ESC)
-- [ ] System Keys 3 (PAUSE BREAK)
-- [ ] System Keys 4(PRINTSCREEN or PRINTSCRN or PRNTSCRN or PRTSCN or PRSC or PRTSCR)
-- [ ] System Keys 5 (MENU APP)
-- [ ] System Keys 6 (F1 to F24)
-- [ ] Modifier Keys (GUI or WINDOWS or COMMAND or META SHIFT ALT CONTROL or CTRL)
-- [ ] Modifier Keys Injection Mode (INJECT_MOD)
-- [ ] Lock Keys Injection (CAPSLOCK NUMLOCK NUMLOCK)
-- [ ] Lock Keys LED Status
-- [ ] Lock Key On/Off/Toggle status check
-- [ ] Key Hold (Hold and Release a key)
-- [ ] Key press Jitter
+Status|Task
+:---:|:---
+❌|String injection (STRING STRINGLN)
+❌|String delay (STRING_DELAY STRINGDELAY)
+❌|Cursor Keys 1 (UP DOWN LEFT RIGHT)
+❌|Curson Keys 2 (UPARROW DOWNARROW LEFTARROW RIGHTARROW)
+❌|Cursor Keys 3 (PAGEUP PAGEDOWN HOME END)
+❌|Cursor Keys 4 (INS INSERT DELETE DEL BACKSPACE BKSP TAB SPACE)
+❌|System Keys 1 (ENTER)
+❌|System Keys 2 (ESCAPE ESC)
+❌|System Keys 3 (PAUSE BREAK)
+❌|System Keys 4(PRINTSCREEN or PRINTSCRN or PRNTSCRN or PRTSCN or PRSC or PRTSCR)
+❌|System Keys 5 (MENU APP)
+❌|System Keys 6 (F1 to F24)
+❌|Modifier Keys (GUI or WINDOWS or COMMAND or META SHIFT ALT CONTROL or CTRL)
+❌|Modifier Keys Injection Mode (INJECT_MOD)
+❌|Lock Keys Injection (CAPSLOCK NUMLOCK NUMLOCK)
+❌|Lock Keys LED Status
+❌|Lock Key On/Off/Toggle status check
+❌|Key Hold (Hold and Release a key)
+❌|Key press Jitter
 ### Rubber Ducky Mouse Commands
-- [ ] Press button (CLICK TOUCH PRESS)
-- [ ] Hold/drag button (DRAG HOLD)
-- [ ] Move cursor without click (MOVE TRANSLATE)
-- [ ] Mouse Wheel (KNOB WHEEL SCROLL)
+Status|Task
+:---:|:---
+❌|Press button (CLICK TOUCH PRESS)
+❌|Hold/drag button (DRAG HOLD)
+❌|Move cursor without click (MOVE TRANSLATE)
+❌|Mouse Wheel (KNOB WHEEL SCROLL)
 ### Rubber Ducky Hardware Features
-- [ ] Arming Mode (Simulate a button press to start/stop the rubber ducky attack)
-- [ ] Feedback LEDs to know status of HID attack.
+Status|Task
+:---:|:---
+❌|Arming Mode (Simulate a button press to start/stop the rubber ducky attack)
+❌|Feedback LEDs to know status of HID attack.
