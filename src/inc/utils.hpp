@@ -40,3 +40,4 @@
 
 extern uint8_t memset_s(void *dest, size_t len, uint8_t value);
 extern std::string exec(std::string cmd);
+extern bool is_number(const std::string& s);

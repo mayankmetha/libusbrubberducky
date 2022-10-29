@@ -11,8 +11,17 @@ bool validate_variable_name(std::string variable_name) {
 }
 
 bool validate_variable_content(std::string variable) {
-    // TODO: Check for TRUE/FALSE
-    // TODO: Check for value in range 0 to 2^32-1
+    if(variable.rfind("TRUE",0) == 0 || variable.rfind("FALSE",0) == 0)
+        return true;
+    if (is_number(variable)) {
+        int value_check = atoi(variable.c_str());
+        if(value_check >= 0 && value_check <= 65535) {
+            return true;
+        }
+        return false;
+    }
+    return false;
+
 }
 
 bool input_file_to_vector(const char *input_pipe, std::vector<std::string> &lines, std::map<std::string, std::string> &symbol_table) {
@@ -21,7 +30,7 @@ bool input_file_to_vector(const char *input_pipe, std::vector<std::string> &line
     std::map<std::string, std::string> constants;
     std::regex reg(R"(\s+)");
 
-    if(input_pipe == NULL) {
+    if (input_pipe == NULL) {
         return false;
     }
 
@@ -52,12 +61,18 @@ bool input_file_to_vector(const char *input_pipe, std::vector<std::string> &line
                 // identify variables
                 line = line.substr(line.find(" ", 0)+1, line.npos);
                 line = std::regex_replace(line, std::regex(" +"), "$1");
-                // TODO: check for "=" in line
+                if (line.find('=') == std::string::npos) {
+                    fprintf(stderr, "Invalid Syntax: = not found%s","");
+                    return false;
+                }
                 if (!validate_variable_name(line.substr(0, line.find("=", 0)))) {
                     fprintf(stderr, "Invalid Token Name: %s",line.substr(0, line.find("=", 0)).c_str());
                     return false;
                 }
-                // TODO: validate the value of variable
+                if (!validate_variable_content(line.substr(line.find("=", 0)+1, line.npos))) {
+                    fprintf(stderr, "Invalid Token Value: %s",line.substr(line.find("=", 0)+1, line.npos).c_str());
+                    return false;
+                }
                 symbol_table[line.substr(0, line.find("=", 0))] = line.substr(line.find("=", 0)+1, line.npos);
             } else {
                 // replace constants
