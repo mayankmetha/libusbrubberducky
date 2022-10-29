@@ -69,7 +69,7 @@ Status|Task
 ❌|Ramdom Keystroke Injection
 ❌|Random HID parameters
 ❌|Payload control
-🚧|USB HID Parameters (VID_ PID_ MAN_ PROD_ SERIAL_)
+❌|USB HID Parameters (VID_ PID_ MAN_ PROD_ SERIAL_)
 ❌|Delay (DELAY DEFAULTDELAY DEFAULT_DELAY)
 ### Rubber Ducky Keyboard Commands
 Status|Task
