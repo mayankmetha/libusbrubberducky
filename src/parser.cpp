@@ -21,13 +21,15 @@ bool validate_variable_content(std::string variable) {
         return false;
     }
     return false;
-
 }
 
-bool input_file_to_vector(const char *input_pipe, std::vector<std::string> &lines, std::map<std::string, std::string> &symbol_table) {
-    char resolved_file_path[PATH_MAX+1];
+bool input_stream_parser(const char *input_pipe) {
     std::string line;
     std::map<std::string, std::string> constants;
+    std::map<std::string, std::string> variables;
+    std::map<std::string, std::vector<std::string>> functions;
+    std::vector<std::string> fun_lines;
+    bool parsing_function = false;
     std::regex reg(R"(\s+)");
 
     if (input_pipe == NULL) {
@@ -35,7 +37,14 @@ bool input_file_to_vector(const char *input_pipe, std::vector<std::string> &line
     }
 
     std::ifstream stream(input_pipe);
-    while(std::getline(stream,line)) {
+    while(std::filesystem::exists(input_pipe)) {
+        // Note: Deleting ipipe will not stop this function, need external kill incase this task needs to be stopped
+        std::getline(stream,line);
+        if(stream.eof()) {
+            stream.clear();
+            std::ifstream stream(input_pipe);
+            std::getline(stream,line);
+        }
         // identify empty lines
         if(line.empty()) {
             continue;
@@ -73,20 +82,17 @@ bool input_file_to_vector(const char *input_pipe, std::vector<std::string> &line
                     fprintf(stderr, "Invalid Token Value: %s",line.substr(line.find("=", 0)+1, line.npos).c_str());
                     return false;
                 }
-                symbol_table[line.substr(0, line.find("=", 0))] = line.substr(line.find("=", 0)+1, line.npos);
+                variables[line.substr(0, line.find("=", 0))] = line.substr(line.find("=", 0)+1, line.npos);
             } else {
                 // replace constants
                 std::map<std::string, std::string>::iterator constant_it;
                 for (constant_it = constants.begin(); constant_it != constants.end(); constant_it++) {
                     line = std::regex_replace(line,std::regex(" +"+constant_it->first+"$|\n|\n\r"), " "+constant_it->second);
                 }
-                // add remaining lines to vector
-                lines.push_back(line);
+                // parsing remain commands
+                // printf("%s\n",line.c_str());
             }
         }
-    }
-    if(stream.eof()) {
-        stream.clear();
     }
 
     return true;

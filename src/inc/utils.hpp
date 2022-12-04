@@ -11,6 +11,7 @@
 #include <sstream>
 #include <fstream>
 #include <regex>
+#include <filesystem>
 
 #define KEYBOARD_HID_FILE       "/dev/hidg0"
 #define MOUSE_HID_FILE          "/dev/hidg1"

@@ -5,21 +5,6 @@
 
 int main(int argc, const char *argv[])
 {
-	std::vector<std::string> lines;
-	std::map<std::string, std::string> symbol_table;
-
-	if (remove(INPUT_PIPE) != 0) {
-		printf("Failed to cleanup input pipes");
-	}
-	if (remove(OUTPUT_PIPE) != 0) {
-		printf("Failed to cleanup output pipes");
-	}
-	if (mkfifo(INPUT_PIPE, PIPE_PERMISSION) < 0) {
-		printf("Failed to create input pipe");
-	}
-	if (mkfifo(OUTPUT_PIPE, PIPE_PERMISSION) < 0) {
-		printf("Failed to create output pipe");
-	}
 
 // Debug code for android
 #ifdef __ANDROID__
@@ -51,7 +36,7 @@ int main(int argc, const char *argv[])
 		printf("%s\n",get_configfs_hid_serial().c_str());
 #endif
 
-	input_file_to_vector(INPUT_PIPE, lines, symbol_table);
+	input_stream_parser(INPUT_PIPE);
 
 	return 0;
 }
