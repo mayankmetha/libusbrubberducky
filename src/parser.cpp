@@ -23,13 +23,21 @@ bool validate_variable_content(std::string variable) {
     return false;
 }
 
+bool validate_function_name(std::string function_name) {
+    std::string test_string = std::regex_replace(function_name, std::regex("^[A-Za-z_][A-Za-z_0-9]+\\(\\)$"), "$1");
+    return test_string.empty();
+}
+
 bool input_stream_parser(const char *input_pipe) {
     std::string line;
     std::map<std::string, std::string> constants;
     std::map<std::string, std::string> variables;
     std::map<std::string, std::vector<std::string>> functions;
     std::vector<std::string> fun_lines;
+    std::string fun_name;
     bool parsing_function = false;
+    bool replace_function_call = false;
+    std::vector<std::string> lines;
     std::regex reg(R"(\s+)");
 
     if (input_pipe == NULL) {
@@ -84,16 +92,50 @@ bool input_stream_parser(const char *input_pipe) {
                     return false;
                 }
                 variables[line.substr(0, line.find("=", 0))] = line.substr(line.find("=", 0)+1, line.npos);
+            } else if(line.rfind("FUNCTION ",0) == 0 && !parsing_function) {
+                // if line begins with FUNCTION
+                fun_name = line.substr(line.find(" ", 0)+1, line.npos);
+                // validate FUNCTION name
+                if (!validate_function_name(line.substr(line.find(" ", 0)+1, line.npos))) {
+                    fprintf(stderr, "Invalid Token Name: %s",line.substr(line.find(" ", 0)+1, line.npos).c_str());
+                    return false;
+                }
+                parsing_function = true;
+            } else if(line.rfind("END_FUNCTION") == 0) {
+                parsing_function = false;
+                functions[fun_name] = fun_lines;
             } else {
                 // replace constants
                 std::map<std::string, std::string>::iterator constant_it;
                 for (constant_it = constants.begin(); constant_it != constants.end(); constant_it++) {
                     line = std::regex_replace(line,std::regex(" +"+constant_it->first+"$|\n|\n\r"), " "+constant_it->second);
                 }
-                // parsing remain commands
-                // printf("%s\n",line.c_str());
+                // replace functions or create a function block
+                if (parsing_function) {
+                    fun_lines.push_back(line);
+                } else {
+                    std::map<std::string, std::vector<std::string>>::iterator function_it;
+                    for (function_it = functions.begin(); function_it != functions.end(); function_it++) {
+                        if(line.compare(function_it->first) == 0) {
+                            replace_function_call = true;
+                            std::vector<std::string> function_line_it;
+                            for (auto i: function_it->second) {
+                                lines.push_back(i);
+                            }
+                        }
+                    }
+                    if(replace_function_call) {
+                        replace_function_call = false;
+                    } else {
+                        lines.push_back(line);
+                    }
+                }
             }
         }
+    }
+
+    for(auto i: lines) {
+        printf("%s\n",i.c_str());
     }
 
     return true;

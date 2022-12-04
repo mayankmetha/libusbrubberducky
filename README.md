@@ -53,7 +53,7 @@ Status|Task
 ✅|Comment Command (REM)
 ✅|Constants
 🚧|Variables
-❌|Functions
+🚧|Functions
 ❌|Extensions
 ❌|Math Operators
 ❌|Comparasion Operators
