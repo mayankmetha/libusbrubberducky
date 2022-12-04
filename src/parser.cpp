@@ -38,12 +38,13 @@ bool input_stream_parser(const char *input_pipe) {
 
     std::ifstream stream(input_pipe);
     while(std::filesystem::exists(input_pipe)) {
-        // Note: Deleting ipipe will not stop this function, need external kill incase this task needs to be stopped
         std::getline(stream,line);
         if(stream.eof()) {
             stream.clear();
-            std::ifstream stream(input_pipe);
-            std::getline(stream,line);
+            // Note: Deleting ipipe will not stop this function if below 2 lines are uncommented, need external kill incase this task needs to be stopped
+            //std::ifstream stream(input_pipe);
+            //std::getline(stream,line);
+            break;
         }
         // identify empty lines
         if(line.empty()) {
