@@ -20,6 +20,9 @@ bool validate_variable_content(std::string variable) {
         }
         return false;
     }
+    if(variable.find("(",0) == 0 && variable.find(")",variable.length()-1)) {
+        return true;
+    }
     return false;
 }
 
@@ -79,24 +82,30 @@ bool input_stream_parser(const char *input_pipe) {
                     return false;
                 }
                 constants[line.substr(0, line.find(" ", 0))] = line.substr(line.find(" ", 0)+1, line.npos);
-            } else if (line.rfind("VAR ",0) == 0) {
-                // identify variables
-                line = line.substr(line.find(" ", 0)+1, line.npos);
-                line = std::regex_replace(line, std::regex(" +"), "$1");
-                if (line.find('=') == std::string::npos) {
-                    fprintf(stderr, "Invalid Syntax: = not found%s","");
-                    return false;
+            } else if (line.rfind("VAR ",0) == 0 || line.rfind("$",0) == 0) {
+                if (line.rfind("VAR ",0) == 0) {
+                    // identify variables
+                    line = line.substr(line.find(" ", 0)+1, line.npos);
+                    line = std::regex_replace(line, std::regex(" +"), "$1");
+                    if (line.find('=') == std::string::npos) {
+                        fprintf(stderr, "Invalid Syntax: = not found%s","");
+                        return false;
+                    }
+                    if (!validate_variable_name(line.substr(0, line.find("=", 0)))) {
+                        fprintf(stderr, "Invalid Token Name: %s",line.substr(0, line.find("=", 0)).c_str());
+                        return false;
+                    }
+                    if (!validate_variable_content(line.substr(line.find("=", 0)+1, line.npos))) {
+                        fprintf(stderr, "Invalid Token Value: %s",line.substr(line.find("=", 0)+1, line.npos).c_str());
+                        return false;
+                    }
+                    //convert variables to bash script variables
+                    line = std::string(line.substr(0, line.find("=", 0))+"="+line.substr(line.find("=", 0)+1, line.npos));
                 }
-                if (!validate_variable_name(line.substr(0, line.find("=", 0)))) {
-                    fprintf(stderr, "Invalid Token Name: %s",line.substr(0, line.find("=", 0)).c_str());
-                    return false;
-                }
-                if (!validate_variable_content(line.substr(line.find("=", 0)+1, line.npos))) {
-                    fprintf(stderr, "Invalid Token Value: %s",line.substr(line.find("=", 0)+1, line.npos).c_str());
-                    return false;
-                }
-                //convert variables to bash script variables
-                lines.push_back(intent(tabspace)+std::string(line.substr(0, line.find("=", 0))+"="+line.substr(line.find("=", 0)+1, line.npos)));
+                line = std::regex_replace(line, std::regex("\\$| "), "");
+                line = std::regex_replace(line, std::regex("\\=\\("), "=$((");
+                line = std::regex_replace(line, std::regex("\\)"), "))");
+                lines.push_back(intent(tabspace)+line);
             } else if(line.rfind("FUNCTION ",0) == 0) {
                 // if line begins with FUNCTION
                 line = line.substr(line.find(" ", 0)+1, line.npos);

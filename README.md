@@ -53,20 +53,20 @@ Status|Task
 ✅|Comment Command (REM)
 ✅|Constants
 🚧|Variables
-🚧|Functions
+✅|Functions
 ❌|Extensions
+✅|Assignment Operators
 ❌|Math Operators
 ❌|Comparasion Operators
 ❌|Parentheses Operator
 ❌|Logical Operators
-❌|Assignment Operators
 ❌|Bitwise Operators
 ❌|If command
 ❌|Else command
 ❌|While loop
 ❌|Loop (REPEAT)
 ❌|Return
-❌|Ramdom Keystroke Injection
+❌|Random Keystroke Injection
 ❌|Random HID parameters
 ❌|Payload control
 ❌|USB HID Parameters (VID_ PID_ MAN_ PROD_ SERIAL_)
