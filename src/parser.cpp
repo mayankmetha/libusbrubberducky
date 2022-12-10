@@ -1,12 +1,12 @@
 #include "inc/parser.hpp"
 
 bool validate_constant_name(std::string constant_name) {
-    std::string test_string = std::regex_replace(constant_name, std::regex("^[A-Za-z_][A-Za-z_0-9]+$"), "$1");
+    std::string test_string = std::regex_replace(constant_name, std::regex("^[A-Za-z_][A-Za-z_0-9]*$"), "$1");
     return test_string.empty();
 }
 
 bool validate_variable_name(std::string variable_name) {
-    std::string test_string = std::regex_replace(variable_name, std::regex("^\\$[A-Za-z_][A-Za-z_0-9]+$"), "$1");
+    std::string test_string = std::regex_replace(variable_name, std::regex("^\\$[A-Za-z_][A-Za-z_0-9]*$"), "$1");
     return test_string.empty();
 }
 
@@ -24,19 +24,23 @@ bool validate_variable_content(std::string variable) {
 }
 
 bool validate_function_name(std::string function_name) {
-    std::string test_string = std::regex_replace(function_name, std::regex("^[A-Za-z_][A-Za-z_0-9]+\\(\\)$"), "$1");
+    std::string test_string = std::regex_replace(function_name, std::regex("^[A-Za-z_][A-Za-z_0-9]*\\(\\)$"), "$1");
     return test_string.empty();
 }
 
+std::string intent(uint8_t tabspace) {
+    std::string close_function_string;
+    for (uint8_t i = 0; i < tabspace; i++) {
+        close_function_string.append("    ");
+    }
+    return close_function_string;
+}
+
 bool input_stream_parser(const char *input_pipe) {
+    uint8_t tabspace = 0;
     std::string line;
     std::map<std::string, std::string> constants;
-    std::map<std::string, std::string> variables;
-    std::map<std::string, std::vector<std::string>> functions;
-    std::vector<std::string> fun_lines;
-    std::string fun_name;
-    bool parsing_function = false;
-    bool replace_function_call = false;
+    std::map<std::string, std::string> function;
     std::vector<std::string> lines;
     std::regex reg(R"(\s+)");
 
@@ -91,45 +95,39 @@ bool input_stream_parser(const char *input_pipe) {
                     fprintf(stderr, "Invalid Token Value: %s",line.substr(line.find("=", 0)+1, line.npos).c_str());
                     return false;
                 }
-                variables[line.substr(0, line.find("=", 0))] = line.substr(line.find("=", 0)+1, line.npos);
-            } else if(line.rfind("FUNCTION ",0) == 0 && !parsing_function) {
+                //convert variables to bash script variables
+                lines.push_back(intent(tabspace)+std::string(line.substr(0, line.find("=", 0))+"="+line.substr(line.find("=", 0)+1, line.npos)));
+            } else if(line.rfind("FUNCTION ",0) == 0) {
                 // if line begins with FUNCTION
-                fun_name = line.substr(line.find(" ", 0)+1, line.npos);
+                line = line.substr(line.find(" ", 0)+1, line.npos);
                 // validate FUNCTION name
-                if (!validate_function_name(line.substr(line.find(" ", 0)+1, line.npos))) {
-                    fprintf(stderr, "Invalid Token Name: %s",line.substr(line.find(" ", 0)+1, line.npos).c_str());
+                if (!validate_function_name(line)) {
+                    fprintf(stderr, "Invalid Token Name: %s",line.c_str());
                     return false;
                 }
-                parsing_function = true;
+                tabspace++;
+                function[line] = line.substr(0, line.length() - 2);
+                lines.push_back(intent(tabspace-1)+line+" {");
             } else if(line.rfind("END_FUNCTION") == 0) {
-                parsing_function = false;
-                functions[fun_name] = fun_lines;
+                tabspace--;
+                lines.push_back(intent(tabspace)+"}");
             } else {
-                // replace constants
                 std::map<std::string, std::string>::iterator constant_it;
                 for (constant_it = constants.begin(); constant_it != constants.end(); constant_it++) {
-                    line = std::regex_replace(line,std::regex(" +"+constant_it->first+"$|\n|\n\r"), " "+constant_it->second);
-                }
-                // replace functions or create a function block
-                if (parsing_function) {
-                    fun_lines.push_back(line);
-                } else {
-                    std::map<std::string, std::vector<std::string>>::iterator function_it;
-                    for (function_it = functions.begin(); function_it != functions.end(); function_it++) {
-                        if(line.compare(function_it->first) == 0) {
-                            replace_function_call = true;
-                            std::vector<std::string> function_line_it;
-                            for (auto i: function_it->second) {
-                                lines.push_back(i);
-                            }
-                        }
-                    }
-                    if(replace_function_call) {
-                        replace_function_call = false;
+                    if(line.rfind("STRING ",0)==0) {
+                        line = std::regex_replace(line,std::regex("STRING +"+constant_it->first+"$|\n|\n\r"), "STRING "+constant_it->second);
                     } else {
-                        lines.push_back(line);
+                        line = std::regex_replace(line,std::regex(" +"+constant_it->first+"$|\n|\n\r"), " "+constant_it->second);
                     }
                 }
+                std::map<std::string, std::string>::iterator function_it;
+                for (function_it = function.begin(); function_it != function.end(); function_it++) {
+                    if(line.rfind(function_it->first,0) == 0) {
+                        line=function_it->second;
+                        break;
+                    }
+                }
+                lines.push_back(intent(tabspace)+line);
             }
         }
     }
