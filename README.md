@@ -56,7 +56,7 @@ Status|Task
 ✅|Functions
 ❌|Extensions
 ✅|Assignment Operators
-❌|Math Operators
+✅|Math Operators
 ❌|Comparasion Operators
 ❌|Parentheses Operator
 ❌|Logical Operators

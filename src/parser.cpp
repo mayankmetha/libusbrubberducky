@@ -20,7 +20,16 @@ bool validate_variable_content(std::string variable) {
         }
         return false;
     }
-    if(variable.find("(",0) == 0 && variable.find(")",variable.length()-1)) {
+    if(variable.find("(",0) < variable.length() && variable.find(")",0) < variable.length()) {
+        return true;
+    }
+    if(variable.find("+",0) < variable.length() || variable.find("-",0 < variable.length())) {
+        return true;
+    }
+    if(variable.find("*",0) < variable.length() || variable.find("/",0) < variable.length()) {
+        return true;
+    }
+    if(variable.find("%",0) < variable.length() || variable.find("^",0) < variable.length()) {
         return true;
     }
     return false;
@@ -102,9 +111,10 @@ bool input_stream_parser(const char *input_pipe) {
                     //convert variables to bash script variables
                     line = std::string(line.substr(0, line.find("=", 0))+"="+line.substr(line.find("=", 0)+1, line.npos));
                 }
+                line = std::regex_replace(line, std::regex("\\^"), "**");
                 line = std::regex_replace(line, std::regex("\\$| "), "");
-                line = std::regex_replace(line, std::regex("\\=\\("), "=$((");
-                line = std::regex_replace(line, std::regex("\\)"), "))");
+                line = std::regex_replace(line, std::regex("\\="), "=$((");
+                line=line+std::string("))");
                 lines.push_back(intent(tabspace)+line);
             } else if(line.rfind("FUNCTION ",0) == 0) {
                 // if line begins with FUNCTION
