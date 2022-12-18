@@ -53,7 +53,7 @@ Status|Task
 ✅|Comment Command (REM)
 ✅|Constants
 🚧|Variables
-✅|Functions
+🚧|Functions
 ❌|Extensions
 ✅|Assignment Operators
 ✅|Math Operators
@@ -62,8 +62,8 @@ Status|Task
 🚧|Logical Operators
 🚧|Bitwise Operators
 ✅|Hexadecimal to Decimal
-❌|If command
-❌|Else command
+🚧|If command
+🚧|Else command
 ❌|While loop
 ❌|Loop (REPEAT)
 ❌|Return

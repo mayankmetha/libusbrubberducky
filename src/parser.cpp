@@ -59,6 +59,7 @@ std::string intent(uint8_t tabspace) {
 
 bool input_stream_parser(const char *input_pipe) {
     uint8_t tabspace = 0;
+    uint8_t conditional = 0;
     std::string line;
     std::map<std::string, std::string> constants;
     std::map<std::string, std::string> function;
@@ -101,8 +102,8 @@ bool input_stream_parser(const char *input_pipe) {
                 }
                 constants[line.substr(0, line.find(" ", 0))] = line.substr(line.find(" ", 0)+1, line.npos);
             } else if (line.rfind("VAR ",0) == 0 || line.rfind("$",0) == 0) {
+                // identify variables and operartions on variables
                 if (line.rfind("VAR ",0) == 0) {
-                    // identify variables
                     line = line.substr(line.find(" ", 0)+1, line.npos);
                     line = std::regex_replace(line, std::regex(" +"), "$1");
                     if (line.find('=') == std::string::npos) {
@@ -126,6 +127,42 @@ bool input_stream_parser(const char *input_pipe) {
                 line = std::regex_replace(line, std::regex("\\="), "=$((");
                 line=line+std::string("))");
                 lines.push_back(intent(tabspace)+line);
+            } else if (line.find("IF (", 0) == 0 && line.find(") THEN",0) < line.length()) {
+                // Normal IF
+                //TODO: Handle functions call in condition
+                conditional++;
+                line = std::regex_replace(line, std::regex("IF \\( *"), "if [ $((");
+                line = std::regex_replace(line, std::regex(" *\\) THEN"), ")) ]; then");
+                lines.push_back(intent(tabspace)+line);
+                tabspace++;
+            } else if (line.find("IF (",0) >= line.length() && line.find("IF $",0) == 0 && line.find(" THEN",0) < line.length()) {
+                // IF with one variable condition
+                //TODO: Handle functions call in condition
+                conditional++;
+                line = std::regex_replace(line, std::regex("IF +"), "if [ $((");
+                line = std::regex_replace(line, std::regex(" +THEN"), ")) ]; then");
+                lines.push_back(intent(tabspace)+line);
+                tabspace++;
+            } else if (line.find("ELSE IF (", 0) == 0 && line.find(") THEN",0) < line.length()) {
+                // ELSE IF
+                //TODO: Handle functions call in condition
+                line = std::regex_replace(line, std::regex("ELSE IF \\( *"), "elif [ $((");
+                line = std::regex_replace(line, std::regex(" *\\) THEN"), ")) ]; then");
+                lines.push_back(intent(tabspace-1)+line);
+            } else if (line.find("ELSE IF (",0) >= line.length() && line.find("ELSE IF $",0) == 0 && line.find(" THEN",0) < line.length()) {
+                // ELSE IF with one variable
+                //TODO: Handle functions call in condition
+                line = std::regex_replace(line, std::regex("ELSE IF +"), "elif [ $((");
+                line = std::regex_replace(line, std::regex(" +THEN"), ")) ]; then");
+                lines.push_back(intent(tabspace-1)+line);
+            } else if (line.find("ELSE",0) == 0) {
+                // ELSE
+                lines.push_back(intent(tabspace-1)+"else");
+            } else if(line.find("END_IF",0) == 0) {
+                // End of IF
+                conditional--;
+                tabspace--;
+                lines.push_back(intent(tabspace)+"fi");
             } else if(line.rfind("FUNCTION ",0) == 0) {
                 // if line begins with FUNCTION
                 line = line.substr(line.find(" ", 0)+1, line.npos);
@@ -138,6 +175,7 @@ bool input_stream_parser(const char *input_pipe) {
                 function[line] = line.substr(0, line.length() - 2);
                 lines.push_back(intent(tabspace-1)+line+" {");
             } else if(line.rfind("END_FUNCTION") == 0) {
+                // END OF FUNCTION
                 tabspace--;
                 lines.push_back(intent(tabspace)+"}");
             } else {
