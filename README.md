@@ -52,8 +52,8 @@ Status|Task
 ✅|Code Intent
 ✅|Comment Command (REM)
 ✅|Constants
-🚧|Variables
-🚧|Functions
+✅|Variables
+✅|Functions
 ❌|Extensions
 ✅|Assignment Operators
 ✅|Math Operators
@@ -62,11 +62,11 @@ Status|Task
 🚧|Logical Operators
 🚧|Bitwise Operators
 ✅|Hexadecimal to Decimal
-🚧|If command
-🚧|Else command
+✅|If command
+✅|Else command
 ❌|While loop
 ❌|Loop (REPEAT)
-❌|Return
+✅|Return
 ❌|Random Keystroke Injection
 ❌|Random HID parameters
 ❌|Payload control
