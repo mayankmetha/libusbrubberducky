@@ -61,7 +61,7 @@ bool input_stream_parser(const char *input_pipe) {
     uint8_t tabspace = 0;
     uint8_t conditional = 0;
     bool is_repeat = false;
-    std::string def_delay = "0";
+    float def_delay = 0;
     std::string line;
     std::map<std::string, std::string> constants;
     std::map<std::string, std::string> function;
@@ -88,7 +88,9 @@ bool input_stream_parser(const char *input_pipe) {
         if(line.empty()) {
             continue;
         } else {
-            lines.push_back(intent(tabspace)+"sleep $(("+def_delay+"/1000))");
+            if (def_delay != 0) {
+                lines.push_back(intent(tabspace)+"sleep "+std::to_string(def_delay));
+            }
             if (line.rfind("REM",0) == 0) {
                 // ignore comments
                 continue;
@@ -100,13 +102,12 @@ bool input_stream_parser(const char *input_pipe) {
             } else if (line.rfind("DEFAULTDELAY ",0) == 0 || line.rfind("DEFAULTDELAY ",0) == 0) {
                 // default delay
                 line = line.substr(line.find(" ", 0)+1, line.npos);
-                def_delay.erase();
-                def_delay.assign(line);
+                def_delay = std::stof(line)/1000.0;
             } else if (line.rfind("DELAY",0) == 0) {
                 // delay
                 line = line.substr(line.find(" ", 0)+1, line.npos);
                 lines.pop_back();
-                lines.push_back(intent(tabspace)+"sleep $(("+line+"/1000))");
+                lines.push_back(intent(tabspace)+"sleep "+std::to_string((std::stof(line)/1000.0)));
             } else if (line.rfind("DEFINE ",0) == 0) { 
                 // identify constants
                 line = line.substr(line.find(" ", 0)+1, line.npos);
