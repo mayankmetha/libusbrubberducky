@@ -60,6 +60,7 @@ std::string intent(uint8_t tabspace) {
 bool input_stream_parser(const char *input_pipe) {
     uint8_t tabspace = 0;
     uint8_t conditional = 0;
+    bool is_repeat = false;
     std::string line;
     std::map<std::string, std::string> constants;
     std::map<std::string, std::string> function;
@@ -89,6 +90,11 @@ bool input_stream_parser(const char *input_pipe) {
             if (line.rfind("REM",0) == 0) {
                 // ignore comments
                 continue;
+                if (is_repeat) {
+                    is_repeat = false;
+                    tabspace--;
+                    lines.push_back(intent(tabspace)+"done");
+                }
             } else if (line.rfind("DEFINE ",0) == 0) { 
                 // identify constants
                 line = line.substr(line.find(" ", 0)+1, line.npos);
@@ -135,6 +141,11 @@ bool input_stream_parser(const char *input_pipe) {
                     is_var_declaration = false;
                 }
                 lines.push_back(intent(tabspace)+line);
+                if (is_repeat) {
+                    is_repeat = false;
+                    tabspace--;
+                    lines.push_back(intent(tabspace)+"done");
+                }
             } else if (line.find("IF (", 0) == 0 && line.find(") THEN",0) < line.length()) {
                 // Normal IF
                 //Handle functions call in condition
@@ -148,7 +159,7 @@ bool input_stream_parser(const char *input_pipe) {
                 // Handle others
                 conditional++;
                 line = std::regex_replace(line, std::regex("IF \\( *"), "if [ $((");
-                line = std::regex_replace(line, std::regex(" *\\) THEN"), ")) ]; then");
+                line = std::regex_replace(line, std::regex(" *\\) THEN"), ")) == 1 ]; then");
                 line = std::regex_replace(line, std::regex("[Ff][Aa][Ll][Ss][Ee]"), "0");
                 line = std::regex_replace(line, std::regex("[Tt][Rr][Uu][Ee]"), "1");
                 lines.push_back(intent(tabspace)+line);
@@ -166,7 +177,7 @@ bool input_stream_parser(const char *input_pipe) {
                 // Handle others
                 conditional++;
                 line = std::regex_replace(line, std::regex("IF +"), "if [ $((");
-                line = std::regex_replace(line, std::regex(" +THEN"), ")) ]; then");
+                line = std::regex_replace(line, std::regex(" +THEN"), ")) == 1 ]; then");
                 line = std::regex_replace(line, std::regex("[Ff][Aa][Ll][Ss][Ee]"), "0");
                 line = std::regex_replace(line, std::regex("[Tt][Rr][Uu][Ee]"), "1");
                 lines.push_back(intent(tabspace)+line);
@@ -183,7 +194,7 @@ bool input_stream_parser(const char *input_pipe) {
                 }
                 // Handle others
                 line = std::regex_replace(line, std::regex("ELSE IF \\( *"), "elif [ $((");
-                line = std::regex_replace(line, std::regex(" *\\) THEN"), ")) ]; then");
+                line = std::regex_replace(line, std::regex(" *\\) THEN"), ")) == 1 ]; then");
                 line = std::regex_replace(line, std::regex("[Ff][Aa][Ll][Ss][Ee]"), "0");
                 line = std::regex_replace(line, std::regex("[Tt][Rr][Uu][Ee]"), "1");
                 lines.push_back(intent(tabspace-1)+line);
@@ -199,7 +210,7 @@ bool input_stream_parser(const char *input_pipe) {
                 }
                 // Handle others
                 line = std::regex_replace(line, std::regex("ELSE IF +"), "elif [ $((");
-                line = std::regex_replace(line, std::regex(" +THEN"), ")) ]; then");
+                line = std::regex_replace(line, std::regex(" +THEN"), ")) == 1 ]; then");
                 line = std::regex_replace(line, std::regex("[Ff][Aa][Ll][Ss][Ee]"), "0");
                 line = std::regex_replace(line, std::regex("[Tt][Rr][Uu][Ee]"), "1");
                 lines.push_back(intent(tabspace-1)+line);
@@ -211,6 +222,51 @@ bool input_stream_parser(const char *input_pipe) {
                 conditional--;
                 tabspace--;
                 lines.push_back(intent(tabspace)+"fi");
+            } else if(line.find("WHILE (", 0) == 0 && line.find(")",0) < line.length()) {
+                // Normal While loop start
+                //Handle functions call in condition
+                std::map<std::string, std::string>::iterator function_it;
+                for (function_it = function.begin(); function_it != function.end(); function_it++) {
+                    if(line.find(function_it->first,0) < line.length()) {
+                        line = std::regex_replace(line, std::regex(function_it->second+"\\(\\)"), "$?");
+                        lines.push_back(intent(tabspace)+function_it->second);
+                    }
+                }
+                // Handle others
+                conditional++;
+                line = std::regex_replace(line, std::regex("WHILE \\( *"), "while [ $((");
+                line = std::regex_replace(line, std::regex(" *\\)"), ")) == 1 ]; do");
+                line = std::regex_replace(line, std::regex("[Ff][Aa][Ll][Ss][Ee]"), "0");
+                line = std::regex_replace(line, std::regex("[Tt][Rr][Uu][Ee]"), "1");
+                lines.push_back(intent(tabspace)+line);
+                tabspace++;
+            } else if(line.find("WHILE (",0) >= line.length() && line.find("WHILE $",0) == 0) {
+                // While loop with one variable condition start
+                //Handle functions call in condition
+                std::map<std::string, std::string>::iterator function_it;
+                for (function_it = function.begin(); function_it != function.end(); function_it++) {
+                    if(line.find(function_it->first,0) < line.length()) {
+                        line = std::regex_replace(line, std::regex(function_it->second+"\\(\\)"), "$?");
+                        lines.push_back(intent(tabspace)+function_it->second);
+                    }
+                }
+                // Handle others
+                conditional++;
+                line = std::regex_replace(line, std::regex("WHILE +"), "while [ $((");
+                line = std::regex_replace(line, std::regex("[Ff][Aa][Ll][Ss][Ee]"), "0");
+                line = std::regex_replace(line, std::regex("[Tt][Rr][Uu][Ee]"), "1");
+                lines.push_back(intent(tabspace)+line+")) == 1 ]; do");
+                tabspace++;
+            } else if(line.rfind("WHILE TRUE",0) == 0 || line.rfind("WHILE FALSE",0) == 0) {
+                // Infinite while loop
+                line = std::regex_replace(line, std::regex("WHILE [Tt][Rr][Uu][Ee]"), "while [ $((1)) == 1 ]; do");
+                line = std::regex_replace(line, std::regex("WHILE [Ff][Aa][Ll][Ss][Ee]"), "while [ $((0)) == 1 ]; do");
+                lines.push_back(intent(tabspace)+line);
+                tabspace++;
+            } else if (line.find("END_WHILE",0) == 0) {
+                // End of while loop
+                tabspace--;
+                lines.push_back(intent(tabspace)+"done");
             } else if(line.rfind("FUNCTION ",0) == 0) {
                 // if line begins with FUNCTION
                 line = line.substr(line.find(" ", 0)+1, line.npos);
@@ -231,6 +287,17 @@ bool input_stream_parser(const char *input_pipe) {
                 line = std::regex_replace(line, std::regex("[Ff][Aa][Ll][Ss][Ee]"), "0");
                 line = std::regex_replace(line, std::regex("[Tt][Rr][Uu][Ee]"), "1");
                 lines.push_back(intent(tabspace)+line);
+                if (is_repeat) {
+                    is_repeat = false;
+                    tabspace--;
+                    lines.push_back(intent(tabspace)+"done");
+                }
+            } else if(line.rfind("REPEAT ",0) == 0) {
+                // REPEAT LOOP
+                line = line.substr(line.find(" ",0)+1, line.npos);
+                lines.push_back(intent(tabspace)+"for repeat_var in {1.."+line+"}; do");
+                is_repeat = true;
+                tabspace++;
             } else {
                 std::map<std::string, std::string>::iterator constant_it;
                 for (constant_it = constants.begin(); constant_it != constants.end(); constant_it++) {
@@ -248,6 +315,11 @@ bool input_stream_parser(const char *input_pipe) {
                     }
                 }
                 lines.push_back(intent(tabspace)+line);
+                if (is_repeat) {
+                    is_repeat = false;
+                    tabspace--;
+                    lines.push_back(intent(tabspace)+"done");
+                }
             }
         }
     }

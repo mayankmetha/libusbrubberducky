@@ -57,15 +57,15 @@ Status|Task
 ❌|Extensions
 ✅|Assignment Operators
 ✅|Math Operators
-🚧|Comparasion Operators
-🚧|Parentheses Operator
-🚧|Logical Operators
-🚧|Bitwise Operators
+✅|Comparasion Operators
+✅|Parentheses Operator
+✅|Logical Operators
+✅|Bitwise Operators
 ✅|Hexadecimal to Decimal
 ✅|If command
 ✅|Else command
-❌|While loop
-❌|Loop (REPEAT)
+✅|While loop
+✅|Loop (REPEAT)
 ✅|Return
 ❌|Random Keystroke Injection
 ❌|Random HID parameters
