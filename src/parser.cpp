@@ -61,6 +61,7 @@ bool input_stream_parser(const char *input_pipe) {
     uint8_t tabspace = 0;
     uint8_t conditional = 0;
     bool is_repeat = false;
+    std::string def_delay = "0";
     std::string line;
     std::map<std::string, std::string> constants;
     std::map<std::string, std::string> function;
@@ -81,12 +82,13 @@ bool input_stream_parser(const char *input_pipe) {
             //std::getline(stream,line);
             break;
         }
+        // remove leading, trailing and multiple whitespaces
+        line = std::regex_replace(line, std::regex("^ +| +$|( ) +"), "$1");
         // identify empty lines
         if(line.empty()) {
             continue;
         } else {
-            // remove leading, trailing and multiple whitespaces
-            line = std::regex_replace(line, std::regex("^ +| +$|( ) +"), "$1");
+            lines.push_back(intent(tabspace)+"sleep $(("+def_delay+"/1000))");
             if (line.rfind("REM",0) == 0) {
                 // ignore comments
                 continue;
@@ -95,6 +97,16 @@ bool input_stream_parser(const char *input_pipe) {
                     tabspace--;
                     lines.push_back(intent(tabspace)+"done");
                 }
+            } else if (line.rfind("DEFAULTDELAY ",0) == 0 || line.rfind("DEFAULTDELAY ",0) == 0) {
+                // default delay
+                line = line.substr(line.find(" ", 0)+1, line.npos);
+                def_delay.erase();
+                def_delay.assign(line);
+            } else if (line.rfind("DELAY",0) == 0) {
+                // delay
+                line = line.substr(line.find(" ", 0)+1, line.npos);
+                lines.pop_back();
+                lines.push_back(intent(tabspace)+"sleep $(("+line+"/1000))");
             } else if (line.rfind("DEFINE ",0) == 0) { 
                 // identify constants
                 line = line.substr(line.find(" ", 0)+1, line.npos);
